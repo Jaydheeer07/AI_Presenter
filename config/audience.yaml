@@ -1,0 +1,28 @@
+# DexIQ AI Presenter - Audience Roster
+# STATUS: DRAFT - Fill in with actual attendee names before the presentation
+
+audience:
+  - name: "Maria"
+    role: "Marketing Manager"
+    slide_interaction: 4
+    question: "Maria, do you use ChatGPT already? What's your go-to use case?"
+    question_audio: "audio/ask_maria_chatgpt.mp3"
+
+  - name: "Jake"
+    role: "IT Support"
+    slide_interaction: 6
+    question: "Jake, have you automated any part of your workflow?"
+    question_audio: "audio/ask_jake_automation.mp3"
+
+  - name: "Lina"
+    role: "Finance Analyst"
+    slide_interaction: 3
+    question: "Lina, have you ever tried an AI tool and been surprised by how wrong it was?"
+    question_audio: "audio/ask_lina_wrong.mp3"
+
+  # Add more audience members as needed before the presentation
+  # - name: "Name"
+  #   role: "Role"
+  #   slide_interaction: <slide_number>
+  #   question: "Name, your question here?"
+  #   question_audio: "audio/ask_name_topic.mp3"

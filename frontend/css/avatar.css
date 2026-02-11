@@ -1,0 +1,144 @@
+/* DexIQ AI Avatar — Audio-reactive visualization */
+
+.avatar-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 200;
+    transition: all 0.5s ease;
+}
+
+/* Expanded avatar for interaction mode */
+.avatar-container.expanded {
+    bottom: 50%;
+    right: 50%;
+    transform: translate(50%, 50%) scale(2);
+}
+
+.avatar {
+    width: 80px;
+    height: 80px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: default;
+}
+
+/* Outer ring — pulses with audio */
+.avatar-ring {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 3px solid rgba(102, 126, 234, 0.4);
+    transition: all 0.15s ease;
+}
+
+/* Inner core — glows */
+.avatar-core {
+    width: 50%;
+    height: 50%;
+    border-radius: 50%;
+    background: radial-gradient(circle, #667eea, #764ba2);
+    transition: all 0.15s ease;
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+}
+
+/* --- Avatar States --- */
+
+/* Idle: gentle slow pulse */
+.avatar-idle .avatar-ring {
+    animation: idle-pulse 3s ease-in-out infinite;
+    border-color: rgba(102, 126, 234, 0.3);
+}
+
+.avatar-idle .avatar-core {
+    opacity: 0.6;
+    box-shadow: 0 0 15px rgba(102, 126, 234, 0.2);
+}
+
+@keyframes idle-pulse {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+}
+
+/* Speaking (pre-gen): active pulse, bright */
+.avatar-speaking .avatar-ring {
+    border-color: rgba(102, 126, 234, 0.8);
+    animation: speaking-pulse 0.3s ease-in-out infinite alternate;
+}
+
+.avatar-speaking .avatar-core {
+    opacity: 1;
+    box-shadow: 0 0 30px rgba(102, 126, 234, 0.6);
+    animation: core-glow 0.3s ease-in-out infinite alternate;
+}
+
+@keyframes speaking-pulse {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.15); }
+}
+
+@keyframes core-glow {
+    0% { box-shadow: 0 0 20px rgba(102, 126, 234, 0.4); }
+    100% { box-shadow: 0 0 40px rgba(102, 126, 234, 0.8); }
+}
+
+/* Speaking (live): slightly different color for conversation mode */
+.avatar-speaking-live .avatar-ring {
+    border-color: rgba(0, 212, 255, 0.8);
+    animation: speaking-pulse 0.3s ease-in-out infinite alternate;
+}
+
+.avatar-speaking-live .avatar-core {
+    background: radial-gradient(circle, #00d4ff, #667eea);
+    opacity: 1;
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.6);
+    animation: core-glow-live 0.3s ease-in-out infinite alternate;
+}
+
+@keyframes core-glow-live {
+    0% { box-shadow: 0 0 20px rgba(0, 212, 255, 0.4); }
+    100% { box-shadow: 0 0 40px rgba(0, 212, 255, 0.8); }
+}
+
+/* Thinking: spinning animation */
+.avatar-thinking .avatar-ring {
+    border-color: rgba(255, 200, 50, 0.6);
+    border-style: dashed;
+    animation: thinking-spin 1.5s linear infinite;
+}
+
+.avatar-thinking .avatar-core {
+    background: radial-gradient(circle, #ffc832, #ff9500);
+    opacity: 0.8;
+    animation: thinking-pulse 1s ease-in-out infinite;
+}
+
+@keyframes thinking-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes thinking-pulse {
+    0%, 100% { transform: scale(0.9); }
+    50% { transform: scale(1.1); }
+}
+
+/* Listening: subtle breathing, different color */
+.avatar-listening .avatar-ring {
+    border-color: rgba(100, 220, 100, 0.5);
+    animation: listening-breathe 2s ease-in-out infinite;
+}
+
+.avatar-listening .avatar-core {
+    background: radial-gradient(circle, #64dc64, #3a9a3a);
+    opacity: 0.7;
+    box-shadow: 0 0 20px rgba(100, 220, 100, 0.3);
+}
+
+@keyframes listening-breathe {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+}

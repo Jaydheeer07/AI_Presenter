@@ -1,0 +1,51 @@
+# Environment
+.env
+.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# WAT temporary files
+.tmp/
+
+# Google OAuth
+credentials.json
+token.json
+
+# Audio files (generated, not tracked)
+frontend/audio/*.mp3
+frontend/audio/*.wav
+!frontend/audio/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+.dockerignore
+
+# Chainlit
+.chainlit/
+chainlit.md
+
+# Logs
+*.log
