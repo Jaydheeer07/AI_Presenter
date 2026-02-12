@@ -21,14 +21,18 @@ from backend.agent.commands import Command, CommandQueue, parse_command
 from backend.agent.graph import presentation_graph
 from backend.agent.states import GraphState, create_initial_state
 from backend.models.presentation import AgentState
-from backend.routers import audience, control, presenter
+from backend.routers import audience, control, presenter, tts
 from backend.services.llm_service import (
     filter_question as llm_filter_question,
     generate_audience_response,
     generate_qa_answer,
 )
 from backend.services.question_manager import QuestionManager
-from backend.services.tts_service import synthesize_speech
+from backend.services.tts_service import (
+    is_configured as tts_is_configured,
+    stream_speech_as_base64,
+    synthesize_speech,
+)
 
 load_dotenv()
 
@@ -43,7 +47,8 @@ command_queue = CommandQueue()
 question_manager = QuestionManager()
 presentation_state: GraphState = create_initial_state()
 
-# Audience config cache
+# Presentation config cache
+_presentation_config: dict = {}
 _audience_config: dict = {}
 
 
@@ -68,12 +73,71 @@ def _load_audience_config() -> dict:
     return _audience_config
 
 
+def _load_presentation_config() -> dict:
+    """Load presentation config for audio file validation."""
+    global _presentation_config
+    if _presentation_config:
+        return _presentation_config
+
+    config_path = Path(__file__).parent.parent / "config" / "presentation.yaml"
+    try:
+        with open(config_path, "r", encoding="utf-8") as f:
+            _presentation_config = yaml.safe_load(f)
+    except FileNotFoundError:
+        logger.warning(f"Presentation config not found at {config_path}")
+        _presentation_config = {}
+
+    return _presentation_config
+
+
+def _validate_audio_files():
+    """Check which pre-generated audio files exist and warn about missing ones."""
+    config = _load_presentation_config()
+    audio_dir = Path(__file__).parent.parent / "frontend" / "audio"
+    slides = config.get("slides", [])
+
+    expected = []
+    for slide in slides:
+        audio_file = slide.get("audio_file")
+        if audio_file:
+            expected.append((slide.get("id", "?"), slide.get("title", ""), Path(audio_file).name))
+
+        interaction = slide.get("interaction")
+        if interaction:
+            q_audio = interaction.get("question_audio")
+            if q_audio:
+                expected.append((slide.get("id", "?"), f"{slide.get('title', '')} (ask)", Path(q_audio).name))
+
+    found = 0
+    missing = []
+    for slide_id, title, filename in expected:
+        if (audio_dir / filename).exists():
+            found += 1
+        else:
+            missing.append((slide_id, title, filename))
+
+    logger.info(f"Audio files: {found}/{len(expected)} present.")
+    if missing:
+        logger.warning(f"Missing {len(missing)} audio file(s):")
+        for sid, title, fname in missing:
+            logger.warning(f"  Slide {sid} ({title}): {fname}")
+        logger.warning(
+            "Generate with: python tools/kokoro_batch_generate.py\n"
+            "  Or export texts: python tools/kokoro_batch_generate.py --export-text"
+        )
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan: startup and shutdown."""
     logger.info("DexIQ AI Presenter starting up...")
     _load_audience_config()
     logger.info(f"Loaded {len(_audience_config)} audience members.")
+    _validate_audio_files()
+    if tts_is_configured():
+        logger.info("ElevenLabs TTS configured and ready for live responses.")
+    else:
+        logger.warning("ElevenLabs TTS NOT configured. Live responses will use text fallback.")
     yield
     logger.info("DexIQ AI Presenter shutting down.")
 
@@ -98,6 +162,7 @@ app.add_middleware(
 app.include_router(presenter.router)
 app.include_router(control.router)
 app.include_router(audience.router)
+app.include_router(tts.router)
 
 # Serve static frontend files
 frontend_path = Path(__file__).parent.parent / "frontend"
@@ -287,25 +352,28 @@ async def _process_audience_response(answer_summary: str) -> dict:
 
         presentation_state["last_response"] = response_text
 
-        # Generate live TTS audio
-        audio_bytes = await synthesize_speech(response_text)
+        # Stream live TTS audio to presenter in chunks
+        if tts_is_configured():
+            # Signal presenter to prepare for streaming audio
+            await presenter.broadcast_to_presenters({
+                "type": "stream_audio_start",
+                "data": {"responseText": response_text},
+            })
+            await presenter.broadcast_to_presenters({
+                "type": "show_avatar",
+                "data": {"mode": "speaking_live"},
+            })
 
-        # Send audio to presenter screen as base64
-        import base64
-        audio_b64 = base64.b64encode(audio_bytes).decode("utf-8")
-
-        await presenter.broadcast_to_presenters({
-            "type": "play_live_audio",
-            "data": {
-                "audioData": audio_b64,
-                "audioType": "live",
-                "responseText": response_text,
-            },
-        })
-        await presenter.broadcast_to_presenters({
-            "type": "show_avatar",
-            "data": {"mode": "speaking"},
-        })
+            # Stream audio chunks to presenter
+            async for chunk_msg in stream_speech_as_base64(response_text):
+                await presenter.broadcast_to_presenters(chunk_msg)
+        else:
+            # No TTS configured — show text only
+            logger.warning("ElevenLabs not configured. Showing response text only.")
+            await presenter.broadcast_to_presenters({
+                "type": "show_response_text",
+                "data": {"text": response_text, "target": target},
+            })
 
         # Send response text to control
         await control.send_to_control({

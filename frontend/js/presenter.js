@@ -92,6 +92,14 @@
                 playLiveAudio(data.audioData, data.responseText);
                 break;
 
+            case 'stream_audio_start':
+                startStreamingAudio(data.responseText);
+                break;
+
+            case 'audio_chunk':
+                handleAudioChunk(data);
+                break;
+
             case 'show_question':
                 showQuestion(data.targetName, data.question);
                 break;
@@ -137,13 +145,23 @@
             playPromise.catch(function (err) {
                 console.warn('[Presenter] Audio play failed:', err);
                 if (fallback) {
-                    console.log('[Presenter] Audio file not found, continuing without audio.');
+                    console.log('[Presenter] Audio file missing, continuing without audio.');
                 }
                 // Notify backend that audio "ended" even if it failed
-                sendToBackend('audio_ended', {});
+                sendToBackend('audio_ended', { error: 'play_failed' });
             });
         }
     }
+
+    // Handle HTTP 404 for missing pre-gen audio files
+    audioPlayer.addEventListener('error', function () {
+        var error = audioPlayer.error;
+        if (error) {
+            console.warn('[Presenter] Audio error:', error.code, error.message);
+        }
+        // Notify backend so the state machine can continue
+        sendToBackend('audio_ended', { error: 'load_error' });
+    });
 
     function playLiveAudio(audioBase64, text) {
         hideOverlays();
@@ -153,11 +171,11 @@
         }
 
         // Decode base64 audio and play
-        const audioBytes = Uint8Array.from(atob(audioBase64), function (c) {
+        var audioBytes = Uint8Array.from(atob(audioBase64), function (c) {
             return c.charCodeAt(0);
         });
-        const blob = new Blob([audioBytes], { type: 'audio/mpeg' });
-        const url = URL.createObjectURL(blob);
+        var blob = new Blob([audioBytes], { type: 'audio/mpeg' });
+        var url = URL.createObjectURL(blob);
 
         audioPlayer.src = url;
         audioPlayer.load();
@@ -171,6 +189,89 @@
         audioPlayer.onended = function () {
             URL.revokeObjectURL(url);
         };
+    }
+
+    // --- Streaming Audio Playback ---
+    // Buffers audio chunks from the backend and plays them as they arrive.
+    // Uses a simple approach: collect all chunks, then play once complete.
+    // (MediaSource Extensions are unreliable for MP3 across browsers.)
+
+    var streamBuffer = [];
+    var isStreaming = false;
+    var streamResponseText = '';
+
+    function startStreamingAudio(text) {
+        console.log('[Presenter] Starting audio stream...');
+        streamBuffer = [];
+        isStreaming = true;
+        streamResponseText = text || '';
+
+        hideOverlays();
+        if (text) {
+            showResponseText(text);
+        }
+    }
+
+    function handleAudioChunk(data) {
+        if (!isStreaming) return;
+
+        if (data.final) {
+            // All chunks received — assemble and play
+            console.log('[Presenter] Stream complete. Assembling ' + streamBuffer.length + ' chunks...');
+            isStreaming = false;
+            assembleAndPlayStream();
+            return;
+        }
+
+        if (data.chunk) {
+            // Decode base64 chunk and buffer it
+            var raw = atob(data.chunk);
+            var bytes = new Uint8Array(raw.length);
+            for (var i = 0; i < raw.length; i++) {
+                bytes[i] = raw.charCodeAt(i);
+            }
+            streamBuffer.push(bytes);
+        }
+    }
+
+    function assembleAndPlayStream() {
+        if (streamBuffer.length === 0) {
+            console.warn('[Presenter] Empty stream buffer.');
+            sendToBackend('audio_ended', {});
+            return;
+        }
+
+        // Calculate total length
+        var totalLength = 0;
+        for (var i = 0; i < streamBuffer.length; i++) {
+            totalLength += streamBuffer[i].length;
+        }
+
+        // Merge all chunks into one Uint8Array
+        var merged = new Uint8Array(totalLength);
+        var offset = 0;
+        for (var j = 0; j < streamBuffer.length; j++) {
+            merged.set(streamBuffer[j], offset);
+            offset += streamBuffer[j].length;
+        }
+
+        console.log('[Presenter] Playing streamed audio: ' + totalLength + ' bytes from ' + streamBuffer.length + ' chunks');
+
+        var blob = new Blob([merged], { type: 'audio/mpeg' });
+        var url = URL.createObjectURL(blob);
+
+        audioPlayer.src = url;
+        audioPlayer.load();
+        audioPlayer.play().catch(function (err) {
+            console.warn('[Presenter] Streamed audio play failed:', err);
+            sendToBackend('audio_ended', {});
+        });
+
+        audioPlayer.onended = function () {
+            URL.revokeObjectURL(url);
+        };
+
+        streamBuffer = [];
     }
 
     // Audio ended event — notify backend
