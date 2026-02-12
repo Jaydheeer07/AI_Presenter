@@ -32,9 +32,9 @@ credentials.json
 token.json
 
 # Audio files (generated, not tracked)
-frontend/audio/*.mp3
-frontend/audio/*.wav
-!frontend/audio/.gitkeep
+#frontend/audio/*.mp3
+#frontend/audio/*.wav
+# !frontend/audio/.gitkeep
 
 # OS
 .DS_Store

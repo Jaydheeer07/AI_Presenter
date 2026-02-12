@@ -268,6 +268,10 @@ async def handle_command(raw_text: str) -> dict:
         # Process the answer through the live response pipeline
         return await _process_audience_response(command.payload.get("summary", ""))
 
+    # Handle /pick N — answer a Q&A question live
+    if command.type == "pick":
+        return await _process_qa_pick(command.payload.get("question_id"))
+
     # Queue the command for processing
     presentation_state["pending_command"] = {"type": command.type, "payload": command.payload}
     result = await _run_graph()
@@ -394,6 +398,87 @@ async def _process_audience_response(answer_summary: str) -> dict:
         return {"status": "fallback", "response": fallback, "error": str(e)}
 
 
+async def _process_qa_pick(question_id: int) -> dict:
+    """Process a /pick N command — answer a Q&A question live.
+
+    Pipeline: fetch question → Claude API → ElevenLabs TTS → stream to presenter.
+    """
+    global presentation_state
+
+    if question_id is None:
+        return {"status": "error", "message": "/pick requires a question ID."}
+
+    # Fetch the question
+    question = question_manager.pick_question(question_id)
+    if not question:
+        return {"status": "error", "message": f"Question #{question_id} not found or already answered."}
+
+    submitter = question.name or "Anonymous"
+    logger.info(f"Answering Q&A question #{question_id} from {submitter}: {question.question}")
+
+    # Update state
+    presentation_state["agent_state"] = AgentState.RESPONDING
+    presentation_state["current_qa_question_id"] = question_id
+
+    # Show thinking animation
+    await presenter.broadcast_to_presenters({
+        "type": "show_avatar",
+        "data": {"mode": "thinking"},
+    })
+    await presenter.broadcast_to_presenters({
+        "type": "show_question",
+        "data": {"targetName": submitter, "question": question.question},
+    })
+    await control.send_to_control({
+        "type": "status_update",
+        "data": {"state": "responding", "message": f"Answering #{question_id} from {submitter}..."},
+    })
+
+    try:
+        # Generate answer via LLM
+        answer_text = await generate_qa_answer(question.question)
+
+        # Mark question as answered
+        question_manager.mark_answered(question_id, answer_text)
+
+        # Stream live TTS audio to presenter
+        if tts_is_configured():
+            await presenter.broadcast_to_presenters({
+                "type": "stream_audio_start",
+                "data": {"responseText": answer_text},
+            })
+            await presenter.broadcast_to_presenters({
+                "type": "show_avatar",
+                "data": {"mode": "speaking_live"},
+            })
+
+            async for chunk_msg in stream_speech_as_base64(answer_text):
+                await presenter.broadcast_to_presenters(chunk_msg)
+        else:
+            logger.warning("ElevenLabs not configured. Showing answer text only.")
+            await presenter.broadcast_to_presenters({
+                "type": "show_response_text",
+                "data": {"text": answer_text, "target": submitter},
+            })
+
+        # Send answer to control
+        await control.send_to_control({
+            "type": "response_generated",
+            "data": {"target": submitter, "response": answer_text, "question_id": question_id},
+        })
+
+        return {"status": "ok", "answer": answer_text, "question_id": question_id}
+
+    except Exception as e:
+        logger.error(f"Error answering Q&A question #{question_id}: {e}", exc_info=True)
+        fallback = "That's a great question. I'd recommend exploring the tools we discussed today to find the best fit."
+        await presenter.broadcast_to_presenters({
+            "type": "show_response_text",
+            "data": {"text": fallback, "target": submitter},
+        })
+        return {"status": "fallback", "answer": fallback, "error": str(e)}
+
+
 async def handle_audio_complete():
     """Called when the presenter screen reports audio playback finished."""
     global presentation_state
@@ -413,10 +498,20 @@ async def handle_audio_complete():
             },
         })
 
-    # After responding finishes, go back to idle (ready for next command)
+    # After responding finishes, return to QA_MODE if we were answering a Q&A question,
+    # otherwise go back to IDLE
     elif current_state == AgentState.RESPONDING:
-        presentation_state["agent_state"] = AgentState.IDLE
-        await presenter.broadcast_to_presenters({"type": "show_avatar", "data": {"mode": "idle"}})
+        if presentation_state.get("current_qa_question_id") is not None:
+            presentation_state["agent_state"] = AgentState.QA_MODE
+            presentation_state["current_qa_question_id"] = None
+            await presenter.broadcast_to_presenters({"type": "show_avatar", "data": {"mode": "idle"}})
+            await control.send_to_control({
+                "type": "status_update",
+                "data": {"state": "qa_mode", "message": "Ready for next question. Use /pick N or /outro."},
+            })
+        else:
+            presentation_state["agent_state"] = AgentState.IDLE
+            await presenter.broadcast_to_presenters({"type": "show_avatar", "data": {"mode": "idle"}})
 
     # After outro finishes, mark as done
     elif current_state == AgentState.OUTRO:
