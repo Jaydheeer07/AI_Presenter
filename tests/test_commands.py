@@ -30,8 +30,14 @@ class TestParseCommand:
         assert result.payload["target_name"] == "Maria"
         assert result.payload["question"] == "What AI tools do you use daily?"
 
+    def test_ask_name_only(self):
+        result = parse_command("/ask Maria")
+        assert result.type == "ask"
+        assert result.payload["target_name"] == "Maria"
+        assert result.payload["question"] == ""
+
     def test_ask_invalid_format(self):
-        result = parse_command("/ask just some text")
+        result = parse_command("/ask")
         assert result.type == "error"
         assert "Format" in result.payload["error"]
 

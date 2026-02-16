@@ -81,13 +81,26 @@ def asking_node(state: GraphState) -> dict:
     """ASKING state — AI asks a specific audience member a question."""
     target = state.get("current_target", "someone")
     question = state.get("current_question", "")
+    slide = state.get("current_slide", 0)
     logger.info(f"Asking {target}: {question}")
+
+    # Map slide number to the pre-generated question audio file
+    question_audio_map = {
+        2: "ask_02_repetitive.mp3",
+        3: "ask_03_wrong.mp3",
+        4: "ask_04_chatgpt.mp3",
+        5: "ask_05_ecosystem.mp3",
+        6: "ask_06_automation.mp3",
+        7: "ask_07_creative.mp3",
+    }
+
+    audio_file = question_audio_map.get(slide, f"ask_{slide:02d}.mp3")
 
     ws_messages = [
         {"type": "show_question", "data": {"question": question, "targetName": target}},
         {"type": "show_avatar", "data": {"mode": "speaking"}},
         {"type": "play_audio", "data": {
-            "audioUrl": f"/audio/ask_{target.lower()}.mp3",
+            "audioUrl": f"/audio/{audio_file}",
             "audioType": "pre_generated",
             "fallback": True,
         }},

@@ -43,7 +43,7 @@ def _get_llm() -> ChatOpenAI:
         model=os.getenv("OPENAI_MODEL", "gpt-4o"),
         api_key=os.getenv("OPENAI_API_KEY"),
         temperature=0.7,
-        max_tokens=300,
+        max_completion_tokens=4096,
     )
 
 
@@ -80,7 +80,15 @@ async def generate_audience_response(
             SystemMessage(content=system_prompt),
             HumanMessage(content=f"{target_name} said: {answer_summary}"),
         ])
-        return response.content.strip()
+        text = (response.content or "").strip()
+        if not text:
+            logger.warning(
+                f"LLM returned empty content for audience response. "
+                f"finish_reason={response.response_metadata.get('finish_reason')}, "
+                f"usage={response.response_metadata.get('token_usage')}"
+            )
+            text = f"Thank you for sharing that, {target_name}. That's a great perspective."
+        return text
     except Exception as e:
         logger.error(f"LLM error generating audience response: {e}")
         return f"Thank you for sharing that, {target_name}. That's a great perspective."
@@ -106,7 +114,15 @@ async def generate_qa_answer(question: str) -> str:
             SystemMessage(content=system_prompt),
             HumanMessage(content=question),
         ])
-        return response.content.strip()
+        text = (response.content or "").strip()
+        if not text:
+            logger.warning(
+                f"LLM returned empty content for Q&A answer. "
+                f"finish_reason={response.response_metadata.get('finish_reason')}, "
+                f"usage={response.response_metadata.get('token_usage')}"
+            )
+            text = "That's a great question. I'd recommend exploring the tools we discussed today to find the best fit for your needs."
+        return text
     except Exception as e:
         logger.error(f"LLM error generating Q&A answer: {e}")
         return "That's a great question. I'd recommend exploring the tools we discussed today to find the best fit for your needs."
@@ -128,7 +144,7 @@ async def filter_question(question: str) -> dict:
         model=os.getenv("OPENAI_MODEL", "gpt-4o"),
         api_key=os.getenv("OPENAI_API_KEY"),
         temperature=0.0,
-        max_tokens=100,
+        max_completion_tokens=512,
     )
 
     try:

@@ -82,15 +82,21 @@ def parse_command(text: str) -> Command:
             )
 
     elif cmd_name == "ask":
-        # Format: /ask Name: Question
-        ask_match = re.match(r"^(\w+):\s*(.+)", args, re.DOTALL)
-        if ask_match:
-            payload["target_name"] = ask_match.group(1)
-            payload["question"] = ask_match.group(2).strip()
+        # Format 1: /ask Name: Custom question   (custom question override)
+        # Format 2: /ask Name                     (auto-pull question from current slide)
+        ask_with_question = re.match(r"^(\w+):\s*(.+)", args, re.DOTALL)
+        ask_name_only = re.match(r"^(\w+)\s*$", args)
+        if ask_with_question:
+            payload["target_name"] = ask_with_question.group(1)
+            payload["question"] = ask_with_question.group(2).strip()
+        elif ask_name_only:
+            payload["target_name"] = ask_name_only.group(1)
+            # question will be auto-filled from slide config in handle_command
+            payload["question"] = ""
         else:
             return Command(
                 type="error",
-                payload={"error": "Format: /ask Name: Your question here"},
+                payload={"error": "Format: /ask Name  OR  /ask Name: Custom question"},
                 raw_text=text,
             )
 

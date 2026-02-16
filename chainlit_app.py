@@ -27,10 +27,25 @@ _ws_connection = None
 _ws_listener_task = None
 
 
-async def _get_ws() -> websockets.WebSocketClientProtocol:
+def _ws_is_open(ws) -> bool:
+    """Check if a WebSocket connection is open (compatible with websockets v13+)."""
+    if ws is None:
+        return False
+    try:
+        return ws.open
+    except AttributeError:
+        pass
+    try:
+        from websockets.protocol import State
+        return ws.protocol.state is State.OPEN
+    except (AttributeError, ImportError):
+        return False
+
+
+async def _get_ws():
     """Get or create the WebSocket connection to the backend."""
     global _ws_connection
-    if _ws_connection is None or _ws_connection.closed:
+    if not _ws_is_open(_ws_connection):
         try:
             _ws_connection = await websockets.connect(BACKEND_WS_URL)
             logger.info(f"Connected to backend at {BACKEND_WS_URL}")
@@ -101,7 +116,7 @@ async def _listen_for_updates():
             elif msg_type == "pong":
                 pass  # Heartbeat response
 
-        except websockets.ConnectionClosed:
+        except (websockets.ConnectionClosed, websockets.exceptions.ConnectionClosedError):
             logger.warning("WebSocket connection closed. Reconnecting in 3s...")
             global _ws_connection
             _ws_connection = None
@@ -168,6 +183,6 @@ async def on_chat_end():
     if _ws_listener_task:
         _ws_listener_task.cancel()
 
-    if _ws_connection and not _ws_connection.closed:
+    if _ws_is_open(_ws_connection):
         await _ws_connection.close()
         logger.info("WebSocket connection closed.")

@@ -116,6 +116,10 @@
                 setAvatarMode('idle');
                 break;
 
+            case 'stop_audio':
+                stopAudio();
+                break;
+
             case 'pause':
                 pauseAll();
                 break;
@@ -396,6 +400,14 @@
     function hideOverlays() {
         questionOverlay.classList.add('hidden');
         responseOverlay.classList.add('hidden');
+    }
+
+    function stopAudio() {
+        audioPlayer.pause();
+        audioPlayer.currentTime = 0;
+        audioPlayer.src = '';
+        setAvatarMode('idle');
+        console.log('[Presenter] Audio stopped.');
     }
 
     function pauseAll() {

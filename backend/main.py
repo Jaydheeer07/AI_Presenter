@@ -47,6 +47,9 @@ command_queue = CommandQueue()
 question_manager = QuestionManager()
 presentation_state: GraphState = create_initial_state()
 
+# Pending command queue — holds one command to auto-execute when audio finishes
+_pending_queued_command: dict | None = None
+
 # Presentation config cache
 _presentation_config: dict = {}
 _audience_config: dict = {}
@@ -220,7 +223,7 @@ async def handle_command(raw_text: str) -> dict:
     Returns:
         Result dict with status and details.
     """
-    global presentation_state
+    global presentation_state, _pending_queued_command
 
     command = parse_command(raw_text)
 
@@ -247,6 +250,22 @@ async def handle_command(raw_text: str) -> dict:
         })
         return {"status": "paused", "previous_state": str(previous)}
 
+    # Handle /skip — stop current audio, clear queued command, go idle
+    if command.type == "skip":
+        _pending_queued_command = None
+        presentation_state["is_audio_playing"] = False
+        presentation_state["agent_state"] = AgentState.IDLE
+        await presenter.broadcast_to_presenters({
+            "type": "stop_audio",
+            "data": {"message": "Skipped."},
+        })
+        await presenter.broadcast_to_presenters({"type": "show_avatar", "data": {"mode": "idle"}})
+        await control.send_to_control({
+            "type": "status_update",
+            "data": {"state": "idle", "message": "Skipped. Ready for next command."},
+        })
+        return {"status": "ok", "command": "skip", "message": "Skipped current action."}
+
     # Handle /resume
     if command.type == "resume":
         previous = presentation_state.get("previous_state", AgentState.IDLE)
@@ -272,7 +291,35 @@ async def handle_command(raw_text: str) -> dict:
     if command.type == "pick":
         return await _process_qa_pick(command.payload.get("question_id"))
 
-    # Queue the command for processing
+    # Auto-fill question from slide config when /ask Name is used without a question
+    if command.type == "ask" and not command.payload.get("question"):
+        slide = presentation_state.get("current_slide", 0)
+        config = _load_presentation_config()
+        slides = config.get("slides", [])
+        slide_config = next((s for s in slides if s.get("id") == slide), None)
+        if slide_config and slide_config.get("interaction"):
+            command.payload["question"] = slide_config["interaction"].get("question", "")
+        if not command.payload.get("question"):
+            return {
+                "status": "error",
+                "message": f"No interaction question configured for slide {slide}. "
+                           f"Use /ask Name: Your question here",
+            }
+
+    # Queue command if audio is still playing — it will auto-execute when audio finishes
+    if presentation_state.get("is_audio_playing") and command.type in ("next", "prev", "goto", "start", "ask"):
+        _pending_queued_command = {"type": command.type, "payload": command.payload, "raw_text": raw_text}
+        logger.info(f"Queued command '{command.type}' — will execute when audio finishes.")
+        await control.send_to_control({
+            "type": "status_update",
+            "data": {
+                "state": str(presentation_state.get("agent_state", "")),
+                "message": f"Queued /{command.type} — will run when current audio finishes. Use /skip to interrupt.",
+            },
+        })
+        return {"status": "queued", "command": command.type, "message": "Will execute when audio finishes."}
+
+    # Execute the command immediately
     presentation_state["pending_command"] = {"type": command.type, "payload": command.payload}
     result = await _run_graph()
 
@@ -355,9 +402,19 @@ async def _process_audience_response(answer_summary: str) -> dict:
         )
 
         presentation_state["last_response"] = response_text
+        logger.info(f"LLM response for {target}: {response_text[:200]}")
+
+        # Send response text to control immediately so Chainlit shows it
+        await control.send_to_control({
+            "type": "response_generated",
+            "data": {"target": target, "response": response_text},
+        })
 
         # Stream live TTS audio to presenter in chunks
         if tts_is_configured():
+            presentation_state["is_audio_playing"] = True
+            presentation_state["current_audio_type"] = "live_tts"
+
             # Signal presenter to prepare for streaming audio
             await presenter.broadcast_to_presenters({
                 "type": "stream_audio_start",
@@ -378,12 +435,6 @@ async def _process_audience_response(answer_summary: str) -> dict:
                 "type": "show_response_text",
                 "data": {"text": response_text, "target": target},
             })
-
-        # Send response text to control
-        await control.send_to_control({
-            "type": "response_generated",
-            "data": {"target": target, "response": response_text},
-        })
 
         return {"status": "ok", "response": response_text}
 
@@ -441,8 +492,17 @@ async def _process_qa_pick(question_id: int) -> dict:
         # Mark question as answered
         question_manager.mark_answered(question_id, answer_text)
 
+        # Send answer to control immediately so Chainlit shows the text
+        await control.send_to_control({
+            "type": "response_generated",
+            "data": {"target": submitter, "response": answer_text, "question_id": question_id},
+        })
+
         # Stream live TTS audio to presenter
         if tts_is_configured():
+            presentation_state["is_audio_playing"] = True
+            presentation_state["current_audio_type"] = "live_tts"
+
             await presenter.broadcast_to_presenters({
                 "type": "stream_audio_start",
                 "data": {"responseText": answer_text},
@@ -460,12 +520,6 @@ async def _process_qa_pick(question_id: int) -> dict:
                 "type": "show_response_text",
                 "data": {"text": answer_text, "target": submitter},
             })
-
-        # Send answer to control
-        await control.send_to_control({
-            "type": "response_generated",
-            "data": {"target": submitter, "response": answer_text, "question_id": question_id},
-        })
 
         return {"status": "ok", "answer": answer_text, "question_id": question_id}
 
@@ -512,6 +566,10 @@ async def handle_audio_complete():
         else:
             presentation_state["agent_state"] = AgentState.IDLE
             await presenter.broadcast_to_presenters({"type": "show_avatar", "data": {"mode": "idle"}})
+            await control.send_to_control({
+                "type": "status_update",
+                "data": {"state": "idle", "message": "Response complete. Ready for next command."},
+            })
 
     # After outro finishes, mark as done
     elif current_state == AgentState.OUTRO:
@@ -522,6 +580,27 @@ async def handle_audio_complete():
         })
 
     logger.info(f"Audio complete. State: {presentation_state.get('agent_state')}")
+
+    # Auto-execute any queued command
+    await _process_queued_command()
+
+
+async def _process_queued_command():
+    """Execute a pending queued command if one exists."""
+    global _pending_queued_command, presentation_state
+
+    if _pending_queued_command is None:
+        return
+
+    queued = _pending_queued_command
+    _pending_queued_command = None
+
+    logger.info(f"Auto-executing queued command: {queued['type']}")
+    try:
+        result = await handle_command(queued.get("raw_text", f"/{queued['type']}"))
+        logger.info(f"Queued command result: {result}")
+    except Exception as e:
+        logger.error(f"Error executing queued command: {e}", exc_info=True)
 
 
 async def filter_and_queue_question(question_id: int):
