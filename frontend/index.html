@@ -1,221 +1,562 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DexIQ AI Presenter</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DexIQ AI Presenter</title>
 
-    <!-- Reveal.js CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/black.css" id="theme">
+<!-- Reveal.js CSS + Black theme as base (provides required layout/variables) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/black.css" id="theme">
 
-    <!-- Custom styles -->
-    <link rel="stylesheet" href="/css/theme.css">
-    <link rel="stylesheet" href="/css/avatar.css">
+<!-- Dexterous Brand Theme (overrides black.css with our brand) -->
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/avatar.css">
 </head>
 <body>
-    <div class="reveal">
-        <div class="slides">
+<div class="reveal">
+<div class="slides">
 
-            <!-- Slide 0: Title -->
-            <section data-slide-id="0">
-                <h2>Lunch &amp; Learn</h2>
-                <h3>Automations &amp; Practical AI Tools for Everyday Work</h3>
-                <p class="subtitle">Presented by <strong>DexIQ</strong> — Your AI Assistant</p>
-                <p class="org">Dexterous Group | 2026</p>
-            </section>
-
-            <!-- Slide 1: AI Introduction -->
-            <section data-slide-id="1">
-                <h2>"Hello, Dexterous!"</h2>
-                <div class="intro-card">
-                    <div class="ai-icon">🤖</div>
-                    <h3>DexIQ — AI Assistant</h3>
-                    <p><em>"I'm here to walk you through how AI tools can make your work easier — and maybe even more fun."</em></p>
-                </div>
-            </section>
-
-            <!-- Slide 2: Why We're Here -->
-            <section data-slide-id="2">
-                <h2>Why We're Here</h2>
-                <ul>
-                    <li><strong>The Mission:</strong> Empowering every team member at Dexterous to leverage AI for efficiency and work-life balance</li>
-                    <li><strong>The Goal:</strong> Moving beyond simple text generation — finding tools that save real time and reduce cognitive load</li>
-                    <li><strong>Today's Focus:</strong> Practical tools you can start using tomorrow</li>
-                </ul>
-            </section>
-
-            <!-- Slide 3: What AI Is (and Isn't) -->
-            <section data-slide-id="3">
-                <h2>Setting the Stage: What AI Is (and Isn't)</h2>
-                <ul>
-                    <li>✅ <strong>AI Is:</strong> A powerful assistant for drafting, summarizing, explaining, and brainstorming</li>
-                    <li>❌ <strong>AI Is Not:</strong> A replacement for human judgment, accountability, or expertise</li>
-                    <li>⚖️ <strong>The Golden Rule:</strong> You are the final director. You are accountable for the final result.</li>
-                </ul>
-            </section>
-
-            <!-- Slide 4: ChatGPT -->
-            <section data-slide-id="4">
-                <h2>Core Productivity: ChatGPT</h2>
-                <p class="slide-subtitle">The all-purpose AI assistant</p>
-                <ul>
-                    <li>📧 <strong>Email Drafting:</strong> Professional communications in seconds</li>
-                    <li>📋 <strong>Summarizing:</strong> Long threads → clear bullet points</li>
-                    <li>🧮 <strong>Logic &amp; Formulas:</strong> Excel formulas explained in plain English</li>
-                    <li>💡 <strong>Brainstorming:</strong> "Help me think about..." conversations</li>
-                </ul>
-            </section>
-
-            <!-- Slide 5: Ecosystem Comparison -->
-            <section data-slide-id="5">
-                <h2>Ecosystem Comparison: Which Tool, When?</h2>
-                <table class="comparison-table">
-                    <thead>
-                        <tr><th>Tool</th><th>Best For</th><th>Key Strength</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>🟢 <strong>ChatGPT</strong></td><td>General drafting, thinking</td><td>Most flexible</td></tr>
-                        <tr><td>🔵 <strong>MS Copilot</strong></td><td>Outlook, Word, Excel, Teams</td><td>Built into Microsoft</td></tr>
-                        <tr><td>🟡 <strong>Google Gemini</strong></td><td>Docs, Gmail, Drive</td><td>Google Workspace native</td></tr>
-                        <tr><td>🟣 <strong>Claude</strong></td><td>Long docs, analysis, coding</td><td>Nuance &amp; reasoning</td></tr>
-                    </tbody>
-                </table>
-            </section>
-
-            <!-- Slide 6: Advanced Workflows -->
-            <section data-slide-id="6">
-                <h2>Advanced Workflows &amp; Technical Efficiency</h2>
-                <p class="slide-subtitle">For the tech-curious (and tech-brave) among us</p>
-                <ul>
-                    <li>🔄 <strong>n8n Automations:</strong> Build workflows that process tasks sequentially</li>
-                    <li>🗄️ <strong>Database Help:</strong> AI-assisted PostgreSQL troubleshooting</li>
-                    <li>☁️ <strong>Cloud Infrastructure:</strong> Managing DigitalOcean, SSH, deployments</li>
-                    <li>🔀 <strong>Version Control:</strong> Smarter GitHub repository management</li>
-                </ul>
-            </section>
-
-            <!-- Slide 7: AI for Entertainment -->
-            <section data-slide-id="7">
-                <h2>Bonus: AI for Fun &amp; Creative Projects</h2>
-                <p class="slide-subtitle">Because it's not all about work</p>
-                <ul>
-                    <li>🎬 <strong>Cinematic Storytelling:</strong> AI-generated visuals for creative projects</li>
-                    <li>🏠 <strong>Creative Design:</strong> Home and exterior design inspiration</li>
-                    <li>🎮 <strong>Narrative Gaming:</strong> AI-powered NPCs with unscripted dialogue</li>
-                    <li>🎵 <strong>Music Creation:</strong> Prompt-to-song tools for background music</li>
-                </ul>
-            </section>
-
-            <!-- Slide 8: AI Safety -->
-            <section data-slide-id="8">
-                <h2>AI Safety &amp; Good Habits</h2>
-                <p class="slide-subtitle">The rules of the road</p>
-                <ul>
-                    <li>🔒 <strong>Security First:</strong> Never paste sensitive client data into public AI models</li>
-                    <li>✅ <strong>Fact-Check Everything:</strong> Always verify AI-generated numbers</li>
-                    <li>🧑‍💼 <strong>Human-in-the-Loop:</strong> AI handles the blank page; you deliver the final version</li>
-                    <li>🏢 <strong>Use Enterprise Tools:</strong> Copilot and enterprise ChatGPT are vetted for business use</li>
-                </ul>
-            </section>
-
-            <!-- Slide 9: Q&A -->
-            <section data-slide-id="9">
-                <h2>Got Questions? Ask Me Anything!</h2>
-                <div class="qa-card">
-                    <p>🔗 Scan the QR code or visit:</p>
-                    <p class="qa-url" id="qa-url"></p>
-                    <div id="qr-placeholder" class="qr-placeholder">
-                        <p>[QR Code]</p>
-                    </div>
-                    <p><em>"I'll answer your questions live — yes, really."</em></p>
-                </div>
-            </section>
-
-            <!-- Slide 10: Closing -->
-            <section data-slide-id="10">
-                <h2>Thank You, Dexterous!</h2>
-                <div class="outro-card">
-                    <div class="ai-icon">🤖</div>
-                    <h3>DexIQ signing off</h3>
-                    <p><em>"Remember: AI is a tool. You are the craftsperson."</em></p>
-                </div>
-            </section>
-
+  <!-- ══════════ SLIDE 0 — Title ══════════ -->
+  <section data-slide-id="0">
+    <div class="gradient-mesh"></div>
+    <div class="bg-arcs">
+      <div class="arc"></div><div class="arc"></div><div class="arc"></div><div class="arc"></div>
+    </div>
+    <div class="slide-content title-slide">
+      <div class="title-badge">Live AI Presentation</div>
+      <h1 class="title-main">
+        Welcome to<br>
+        <span class="highlight-teal">DexIQ AI</span> <span class="highlight-gold">Presenter</span>
+      </h1>
+      <p class="title-sub">
+        An AI-powered presentation system built by Dexterous Group — where accounting intelligence meets cutting-edge technology.
+      </p>
+      <div class="stats-row">
+        <div class="stat-item">
+          <div class="stat-value">13</div>
+          <div class="stat-label">Live Slides</div>
         </div>
-    </div>
-
-    <!-- AI Avatar overlay -->
-    <div id="avatar-container" class="avatar-container">
-        <div id="avatar" class="avatar avatar-idle">
-            <div class="avatar-ring"></div>
-            <div class="avatar-core"></div>
+        <div class="stat-item">
+          <div class="stat-value">AI</div>
+          <div class="stat-label">Narrated</div>
         </div>
-    </div>
-
-    <!-- Question display overlay -->
-    <div id="question-overlay" class="question-overlay hidden">
-        <div class="question-card">
-            <p class="question-target" id="question-target"></p>
-            <p class="question-text" id="question-text"></p>
+        <div class="stat-item">
+          <div class="stat-value">&infin;</div>
+          <div class="stat-label">Q&amp;A Ready</div>
         </div>
+      </div>
     </div>
+    <div class="watermark-arcs"><div class="warc"></div><div class="warc"></div><div class="warc"></div></div>
+  </section>
 
-    <!-- Response text overlay -->
-    <div id="response-overlay" class="response-overlay hidden">
-        <div class="response-card">
-            <p class="response-text" id="response-text"></p>
+  <!-- ══════════ SLIDE 1 — Intro ══════════ -->
+  <section data-slide-id="1">
+    <div class="gradient-mesh"></div>
+    <div class="slide-content intro-slide">
+      <div class="badge">Meet Your Presenter</div>
+      <h2 class="slide-title">Hi, I'm <span class="highlight-teal">DexIQ</span></h2>
+      <p class="slide-subtitle">
+        I'm an AI assistant — not a human, not a recording. Everything I say today is generated live, just for this audience.
+      </p>
+      <div class="intro-features">
+        <span class="feature-chip">&#x1F9E0; AI-Powered</span>
+        <span class="feature-chip">&#x1F399;&#xFE0F; Live Voice</span>
+        <span class="feature-chip">&#x1F4AC; Interactive Q&amp;A</span>
+        <span class="feature-chip">&#x26A1; Real-Time</span>
+      </div>
+      <blockquote class="intro-quote">
+        "Think of me as a knowledgeable colleague who never sleeps and processes information really, really fast."
+      </blockquote>
+    </div>
+    <div class="watermark-arcs"><div class="warc"></div><div class="warc"></div><div class="warc"></div></div>
+  </section>
+
+  <!-- ══════════ SLIDE 2 — Why Should You Care About AI? ══════════ -->
+  <section data-slide-id="2">
+    <div class="gradient-mesh"></div>
+    <div class="slide-content">
+      <div class="badge">The Big Picture</div>
+      <h2 class="slide-title">Why Should You <span class="highlight-gold">Care About AI?</span></h2>
+      <p class="slide-subtitle">
+        AI isn't coming — it's already here, reshaping industries at unprecedented speed.
+      </p>
+      <div class="three-cards">
+        <div class="info-card">
+          <div class="card-icon">&#x1F4C8;</div>
+          <div class="card-label">Productivity</div>
+          <div class="card-text">Automate repetitive tasks and focus on high-value work that actually requires your expertise.</div>
         </div>
+        <div class="info-card">
+          <div class="card-icon">&#x1F3E2;</div>
+          <div class="card-label">Industry Shift</div>
+          <div class="card-text">Every major firm is investing in AI. Early adopters gain a significant competitive advantage.</div>
+        </div>
+        <div class="info-card">
+          <div class="card-icon">&#x1F3AF;</div>
+          <div class="card-label">Your Career</div>
+          <div class="card-text">Understanding AI isn't optional — it's the new literacy that separates leaders from followers.</div>
+        </div>
+      </div>
     </div>
+  </section>
 
-    <!-- Click-to-start overlay (unlocks browser audio autoplay policy) -->
-    <div id="start-overlay" style="
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.85); z-index: 9999;
-        display: flex; align-items: center; justify-content: center;
-        cursor: pointer; flex-direction: column; gap: 16px;
-    ">
-        <div style="font-size: 3rem;">🎙️</div>
-        <div style="color: #fff; font-size: 1.5rem; font-weight: 600;">Click anywhere to start</div>
-        <div style="color: #aaa; font-size: 0.9rem;">This unlocks audio playback for the presentation</div>
+  <!-- ══════════ SLIDE 3 — What AI Is / Isn't ══════════ -->
+  <section data-slide-id="3">
+    <div class="gradient-mesh"></div>
+    <div class="slide-content">
+      <div class="badge">Setting Expectations</div>
+      <h2 class="slide-title">What AI <span class="highlight-teal">Is</span> &amp; <span class="highlight-gold">Isn't</span></h2>
+      <div class="two-columns">
+        <div class="column">
+          <div class="column-header teal">&#x2713; AI Is</div>
+          <div class="clean-list">
+            <div class="list-item">A powerful pattern recognition engine</div>
+            <div class="list-item">A tireless assistant for drafting and research</div>
+            <div class="list-item">A tool that amplifies human expertise</div>
+            <div class="list-item">Getting better every month</div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="column-header gold">&#x2717; AI Isn't</div>
+          <div class="clean-list">
+            <div class="list-item">Sentient or self-aware</div>
+            <div class="list-item">Always correct — it can "hallucinate"</div>
+            <div class="list-item">A replacement for professional judgment</div>
+            <div class="list-item">Something to fear (but respect it)</div>
+          </div>
+        </div>
+      </div>
+      <div class="golden-rule">
+        <strong>Golden Rule:</strong> AI is your co-pilot, not your autopilot. Always verify.
+      </div>
     </div>
+  </section>
 
-    <!-- Audio element for playback -->
-    <audio id="audio-player" preload="auto"></audio>
+  <!-- ══════════ SLIDE 4 — ChatGPT & LLMs ══════════ -->
+  <section data-slide-id="4">
+    <div class="gradient-mesh"></div>
+    <div class="slide-content">
+      <div class="badge">Core Technology</div>
+      <h2 class="slide-title">ChatGPT &amp; <span class="highlight-teal">Large Language Models</span></h2>
+      <p class="slide-subtitle">
+        The technology behind the AI revolution — and how it actually works.
+      </p>
+      <div class="icon-grid">
+        <div class="icon-item">
+          <div class="icon-circle">&#x1F4DA;</div>
+          <div>
+            <div class="icon-label">Training</div>
+            <div class="icon-desc">Learned from billions of text documents across the internet</div>
+          </div>
+        </div>
+        <div class="icon-item">
+          <div class="icon-circle">&#x1F524;</div>
+          <div>
+            <div class="icon-label">Prediction</div>
+            <div class="icon-desc">Predicts the most likely next word, one token at a time</div>
+          </div>
+        </div>
+        <div class="icon-item">
+          <div class="icon-circle">&#x1F4A1;</div>
+          <div>
+            <div class="icon-label">Emergence</div>
+            <div class="icon-desc">Simple prediction at scale produces surprisingly intelligent behavior</div>
+          </div>
+        </div>
+        <div class="icon-item">
+          <div class="icon-circle">&#x1F512;</div>
+          <div>
+            <div class="icon-label">Alignment</div>
+            <div class="icon-desc">Fine-tuned with human feedback to be helpful, harmless, and honest</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <!-- Reveal.js -->
-    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <!-- ══════════ SLIDE 5 — AI Ecosystem ══════════ -->
+  <section data-slide-id="5">
+    <div class="gradient-mesh"></div>
+    <div class="slide-content">
+      <div class="badge">The Landscape</div>
+      <h2 class="slide-title">The AI <span class="highlight-gold">Ecosystem</span></h2>
+      <p class="slide-subtitle">
+        It's not just ChatGPT — here are the major players you should know.
+      </p>
+      <div class="tool-cards">
+        <div class="tool-card">
+          <div class="tool-color" style="background: #10A37F;"></div>
+          <div class="card-icon">&#x1F49A;</div>
+          <div class="card-label">ChatGPT</div>
+          <div class="card-text">OpenAI's flagship. Great all-rounder for writing, analysis, and code.</div>
+          <div class="tool-tip">Best for: General tasks</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-color" style="background: var(--dex-teal);"></div>
+          <div class="card-icon">&#x1F9E0;</div>
+          <div class="card-label">Claude</div>
+          <div class="card-text">Anthropic's model. Excels at long documents, nuance, and safety.</div>
+          <div class="tool-tip">Best for: Deep analysis</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-color" style="background: #4285F4;"></div>
+          <div class="card-icon">&#x1F537;</div>
+          <div class="card-label">Gemini</div>
+          <div class="card-text">Google's model. Strong at search integration and multimodal tasks.</div>
+          <div class="tool-tip">Best for: Research</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-color" style="background: #0467DF;"></div>
+          <div class="card-icon">&#x1F916;</div>
+          <div class="card-label">Copilot</div>
+          <div class="card-text">Microsoft's AI embedded in Office 365, Teams, and Windows.</div>
+          <div class="tool-tip">Best for: Office workflows</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <!-- Custom scripts -->
-    <script src="/js/avatar.js"></script>
-    <script src="/js/presenter.js"></script>
+  <!-- ══════════ SLIDE 6 — Prompt Engineering 101 (NEW) ══════════ -->
+  <section data-slide-id="6">
+    <div class="gradient-mesh"></div>
+    <div class="slide-content">
+      <div class="badge">Practical Skills</div>
+      <h2 class="slide-title">How to Talk to AI — <span class="highlight-teal">Prompt Engineering</span> 101</h2>
+      <p class="slide-subtitle">
+        The difference between a mediocre AI response and a brilliant one is all in how you ask.
+      </p>
+      <div class="prompt-comparison">
+        <div class="prompt-box bad-prompt">
+          <div class="prompt-label">&#x2717; Vague Prompt</div>
+          <div class="prompt-code">"Write me an email about the invoice"</div>
+          <div class="prompt-result">&rarr; Generic, unfocused output that needs heavy editing</div>
+        </div>
+        <div class="prompt-box good-prompt">
+          <div class="prompt-label">&#x2713; Engineered Prompt</div>
+          <div class="prompt-code">"You are a professional accountant at an Australian firm. Write a polite follow-up email to a client whose invoice #4521 is 14 days overdue. Keep it firm but friendly. Use Australian English."</div>
+          <div class="prompt-result">&rarr; Specific, actionable, ready to send</div>
+        </div>
+      </div>
+      <div class="prompt-tips">
+        <div class="tip-item">
+          <div class="tip-num">1</div>
+          <div class="tip-text"><strong>Give it a role</strong> — "You are a senior tax advisor"</div>
+        </div>
+        <div class="tip-item">
+          <div class="tip-num">2</div>
+          <div class="tip-text"><strong>Be specific</strong> — Include context, constraints, and format</div>
+        </div>
+        <div class="tip-item">
+          <div class="tip-num">3</div>
+          <div class="tip-text"><strong>Show examples</strong> — Provide a sample of what "good" looks like</div>
+        </div>
+        <div class="tip-item">
+          <div class="tip-num">4</div>
+          <div class="tip-text"><strong>Iterate</strong> — Refine the output through follow-up prompts</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <script>
-        // Initialize Reveal.js
-        Reveal.initialize({
-            hash: false,
-            controls: false,
-            progress: true,
-            center: true,
-            transition: 'slide',
-            keyboard: false,  // Disable keyboard nav — controlled by backend
-            touch: false,
+  <!-- ══════════ SLIDE 7 — Advanced Use Cases (was slide 6) ══════════ -->
+  <section data-slide-id="7">
+    <div class="gradient-mesh"></div>
+    <div class="slide-content">
+      <div class="badge">Going Deeper</div>
+      <h2 class="slide-title">Advanced <span class="highlight-gold">Use Cases</span></h2>
+      <p class="slide-subtitle">
+        Beyond chatbots — AI is transforming real workflows in accounting and professional services.
+      </p>
+      <div class="icon-grid">
+        <div class="icon-item">
+          <div class="icon-circle">&#x1F4CA;</div>
+          <div>
+            <div class="icon-label">Data Analysis</div>
+            <div class="icon-desc">Upload spreadsheets and get instant insights, anomaly detection, and trend analysis</div>
+          </div>
+        </div>
+        <div class="icon-item">
+          <div class="icon-circle">&#x1F4DD;</div>
+          <div>
+            <div class="icon-label">Document Drafting</div>
+            <div class="icon-desc">Generate client letters, compliance reports, and engagement documents in seconds</div>
+          </div>
+        </div>
+        <div class="icon-item">
+          <div class="icon-circle">&#x1F504;</div>
+          <div>
+            <div class="icon-label">Workflow Automation</div>
+            <div class="icon-desc">Connect AI to your existing tools to automate repetitive processes end-to-end</div>
+          </div>
+        </div>
+        <div class="icon-item">
+          <div class="icon-circle">&#x1F393;</div>
+          <div>
+            <div class="icon-label">Training &amp; Onboarding</div>
+            <div class="icon-desc">Create AI-powered knowledge bases that new staff can query on day one</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ SLIDE 8 — Entertainment / Creative (was slide 7) ══════════ -->
+  <section data-slide-id="8">
+    <div class="gradient-mesh"></div>
+    <div class="slide-content">
+      <div class="badge">Fun Side</div>
+      <h2 class="slide-title">AI for <span class="highlight-teal">Entertainment</span> &amp; Creativity</h2>
+      <p class="slide-subtitle">
+        AI isn't all serious business — it can be surprisingly creative and fun.
+      </p>
+      <div class="icon-grid">
+        <div class="icon-item">
+          <div class="icon-circle">&#x1F3A8;</div>
+          <div>
+            <div class="icon-label">Image Generation</div>
+            <div class="icon-desc">Create artwork, designs, and visual concepts from text descriptions</div>
+          </div>
+        </div>
+        <div class="icon-item">
+          <div class="icon-circle">&#x1F3B5;</div>
+          <div>
+            <div class="icon-label">Music &amp; Audio</div>
+            <div class="icon-desc">Generate music, sound effects, and even voice cloning for creative projects</div>
+          </div>
+        </div>
+        <div class="icon-item">
+          <div class="icon-circle">&#x1F3AC;</div>
+          <div>
+            <div class="icon-label">Video &amp; Animation</div>
+            <div class="icon-desc">Text-to-video tools can produce clips, animations, and visual stories</div>
+          </div>
+        </div>
+        <div class="icon-item">
+          <div class="icon-circle">&#x270D;&#xFE0F;</div>
+          <div>
+            <div class="icon-label">Creative Writing</div>
+            <div class="icon-desc">Stories, poetry, scripts, and brainstorming — AI as your creative partner</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ SLIDE 9 — AI Safety (was slide 8) ══════════ -->
+  <section data-slide-id="9">
+    <div class="gradient-mesh"></div>
+    <div class="slide-content">
+      <div class="badge">Stay Safe</div>
+      <h2 class="slide-title">AI <span class="highlight-gold">Safety</span> &amp; Best Practices</h2>
+      <p class="slide-subtitle">
+        With great power comes great responsibility. Here are the rules to live by.
+      </p>
+      <div class="safety-rules">
+        <div class="safety-rule">
+          <div class="rule-number">1</div>
+          <div class="rule-content">
+            <div class="rule-title">Never share confidential data</div>
+            <div class="rule-desc">Client names, financials, and PII should never go into public AI tools</div>
+          </div>
+        </div>
+        <div class="safety-rule">
+          <div class="rule-number">2</div>
+          <div class="rule-content">
+            <div class="rule-title">Always verify outputs</div>
+            <div class="rule-desc">AI can hallucinate facts, citations, and calculations — double-check everything</div>
+          </div>
+        </div>
+        <div class="safety-rule">
+          <div class="rule-number">3</div>
+          <div class="rule-content">
+            <div class="rule-title">Know your firm's AI policy</div>
+            <div class="rule-desc">Check which tools are approved and what data classification rules apply</div>
+          </div>
+        </div>
+        <div class="safety-rule">
+          <div class="rule-number">4</div>
+          <div class="rule-content">
+            <div class="rule-title">Disclose AI use when required</div>
+            <div class="rule-desc">Transparency builds trust — let stakeholders know when AI assisted your work</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ SLIDE 10 — The Meta Moment (NEW) ══════════ -->
+  <section data-slide-id="10">
+    <div class="gradient-mesh"></div>
+    <div class="slide-content">
+      <div class="badge">Behind the Curtain</div>
+      <h2 class="slide-title">The <span class="highlight-teal">Meta Moment</span></h2>
+      <p class="slide-subtitle">
+        Here's what's actually happening right now to make this presentation work.
+      </p>
+      <div class="meta-flow">
+        <div class="flow-step">
+          <div class="flow-icon">&#x1F468;&#x200D;&#x1F4BC;</div>
+          <div class="flow-label">Puppeteer</div>
+          <div class="flow-desc">Human operator controlling slide flow via commands</div>
+        </div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step">
+          <div class="flow-icon">&#x1F916;</div>
+          <div class="flow-label">AI Brain</div>
+          <div class="flow-desc">Claude generates narration and answers in real-time</div>
+        </div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step">
+          <div class="flow-icon">&#x1F50A;</div>
+          <div class="flow-label">Voice</div>
+          <div class="flow-desc">Kokoro TTS converts text to natural-sounding speech</div>
+        </div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step">
+          <div class="flow-icon">&#x1F3A7;</div>
+          <div class="flow-label">You</div>
+          <div class="flow-desc">The audience hears and sees a seamless live AI presentation</div>
+        </div>
+      </div>
+      <blockquote class="meta-quote">
+        "I'm not a recording. Every word I've spoken today was generated live — including my answers to your questions."
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- ══════════ SLIDE 11 — Q&A (was slide 9) ══════════ -->
+  <section data-slide-id="11">
+    <div class="gradient-mesh"></div>
+    <div class="bg-arcs">
+      <div class="arc"></div><div class="arc"></div><div class="arc"></div><div class="arc"></div>
+    </div>
+    <div class="slide-content qa-layout">
+      <div class="badge">Interactive</div>
+      <h2 class="slide-title">Let's Do <span class="highlight-gold">Q&amp;A</span></h2>
+      <p class="slide-subtitle" style="text-align: center;">
+        Ask me anything about AI — I'll answer live, right now.
+      </p>
+      <div class="qa-steps">
+        <div class="qa-step">
+          <div class="step-num">1</div>
+          <div class="step-text">Raise your hand or type your question</div>
+        </div>
+        <div class="qa-step">
+          <div class="step-num">2</div>
+          <div class="step-text">I'll process it in real-time using Claude AI</div>
+        </div>
+        <div class="qa-step">
+          <div class="step-num">3</div>
+          <div class="step-text">You'll hear my answer spoken live — no recordings</div>
+        </div>
+      </div>
+    </div>
+    <div class="watermark-arcs"><div class="warc"></div><div class="warc"></div><div class="warc"></div></div>
+  </section>
+
+  <!-- ══════════ SLIDE 12 — Outro (was slide 10) ══════════ -->
+  <section data-slide-id="12">
+    <div class="gradient-mesh"></div>
+    <div class="bg-arcs">
+      <div class="arc"></div><div class="arc"></div><div class="arc"></div><div class="arc"></div>
+    </div>
+    <div class="slide-content outro-slide">
+      <div class="badge">Thank You</div>
+      <h2 class="slide-title">
+        <span class="highlight-teal">Accounting.</span><br>
+        <span class="highlight-teal">Intelligence.</span><br>
+        <span class="highlight-gold">Insights.</span>
+      </h2>
+      <blockquote class="outro-quote">
+        "The best way to predict the future is to build it — and AI is the most powerful building tool we've ever had."
+      </blockquote>
+      <div class="takeaway-chips">
+        <span class="takeaway-chip">Start experimenting today</span>
+        <span class="takeaway-chip">AI = co-pilot, not autopilot</span>
+        <span class="takeaway-chip">Stay curious, stay safe</span>
+      </div>
+    </div>
+    <div class="watermark-arcs"><div class="warc"></div><div class="warc"></div><div class="warc"></div></div>
+  </section>
+
+</div><!-- /slides -->
+</div><!-- /reveal -->
+
+<!-- AI Avatar overlay -->
+<div id="avatar-container" class="avatar-container">
+    <div id="avatar" class="avatar avatar-idle">
+        <div class="avatar-ring"></div>
+        <div class="avatar-core"></div>
+    </div>
+</div>
+
+<!-- Question display overlay -->
+<div id="question-overlay" class="question-overlay hidden">
+    <div class="question-card">
+        <p class="question-target" id="question-target"></p>
+        <p class="question-text" id="question-text"></p>
+    </div>
+</div>
+
+<!-- Response text overlay -->
+<div id="response-overlay" class="response-overlay hidden">
+    <div class="response-card">
+        <p class="response-text" id="response-text"></p>
+    </div>
+</div>
+
+<!-- Click-to-start overlay (unlocks browser audio autoplay policy) -->
+<div id="start-overlay" class="start-overlay">
+    <div class="start-icon">&#x1F399;&#xFE0F;</div>
+    <div class="start-title">Click anywhere to start</div>
+    <div class="start-subtitle">This unlocks audio playback for the presentation</div>
+</div>
+
+<!-- Audio element for playback -->
+<audio id="audio-player" preload="auto"></audio>
+
+<!-- Reveal.js -->
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+
+<!-- Custom scripts -->
+<script src="/js/avatar.js"></script>
+<script src="/js/presenter.js"></script>
+
+<script>
+    // Initialize Reveal.js
+    Reveal.initialize({
+        hash: false,
+        controls: false,
+        progress: true,
+        center: false,         // DISABLED — we use CSS flexbox centering instead
+        transition: 'slide',
+        backgroundTransition: 'fade',
+        width: 1280,
+        height: 720,
+        margin: 0,             // Full viewport — no margin clipping
+        minScale: 0.2,
+        maxScale: 2.0,
+        keyboard: false,       // Disable keyboard nav — controlled by backend
+        touch: false,
+        overview: false,
+        fragments: false,      // All content shows immediately when slide is navigated to
+    });
+
+    // Click-to-start: unlock browser audio autoplay policy
+    document.getElementById('start-overlay').addEventListener('click', function () {
+        var audio = document.getElementById('audio-player');
+        // Play a silent snippet to unlock the audio context
+        audio.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
+        audio.play().then(function () {
+            audio.pause();
+            audio.src = '';
+            console.log('[Presenter] Audio unlocked by user interaction.');
+        }).catch(function (e) {
+            console.warn('[Presenter] Audio unlock failed:', e);
         });
-
-        // Click-to-start: unlock browser audio autoplay policy
-        document.getElementById('start-overlay').addEventListener('click', function () {
-            var audio = document.getElementById('audio-player');
-            // Play a silent snippet to unlock the audio context
-            audio.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
-            audio.play().then(function () {
-                audio.pause();
-                audio.src = '';
-                console.log('[Presenter] Audio unlocked by user interaction.');
-            }).catch(function (e) {
-                console.warn('[Presenter] Audio unlock failed:', e);
-            });
-            this.style.display = 'none';
-        });
-    </script>
+        this.style.display = 'none';
+    });
+</script>
 </body>
 </html>

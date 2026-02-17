@@ -12,6 +12,27 @@ from backend.models.presentation import AgentState, AudioType
 
 logger = logging.getLogger(__name__)
 
+# Audio file mapping for all 13 slides (indices 1-12; slide 0 is the title with no audio)
+SLIDE_AUDIO_MAP = {
+    1: "slide_01_intro.mp3",
+    2: "slide_02_why.mp3",
+    3: "slide_03_what_ai_is.mp3",
+    4: "slide_04_chatgpt.mp3",
+    5: "slide_05_ecosystem.mp3",
+    6: "slide_06_prompt_engineering.mp3",   # NEW — Prompt Engineering 101
+    7: "slide_07_advanced.mp3",             # was slide 6
+    8: "slide_08_entertainment.mp3",        # was slide 7
+    9: "slide_09_safety.mp3",               # was slide 8
+    10: "slide_10_meta_moment.mp3",         # NEW — Meta Moment
+    11: "slide_11_qa.mp3",                  # was slide 9
+    12: "slide_12_outro.mp3",               # was slide 10
+}
+
+
+def _get_audio_file(slide: int) -> str:
+    """Get the audio filename for a given slide index."""
+    return SLIDE_AUDIO_MAP.get(slide, f"slide_{slide:02d}.mp3")
+
 
 def idle_node(state: GraphState) -> dict:
     """IDLE state — waiting for the first command."""
@@ -30,7 +51,7 @@ def introducing_node(state: GraphState) -> dict:
     ws_messages = [
         {"type": "goto_slide", "data": {"slideIndex": slide_index}},
         {"type": "show_avatar", "data": {"mode": "speaking"}},
-        {"type": "play_audio", "data": {"audioUrl": "/audio/slide_01_intro.mp3", "audioType": "pre_generated"}},
+        {"type": "play_audio", "data": {"audioUrl": f"/audio/{_get_audio_file(slide_index)}", "audioType": "pre_generated"}},
         {"type": "status", "data": {"state": "introducing", "message": "DexIQ is introducing itself..."}},
     ]
 
@@ -48,19 +69,7 @@ def presenting_node(state: GraphState) -> dict:
     slide = state["current_slide"]
     logger.info(f"Presenting slide {slide}.")
 
-    audio_map = {
-        2: "slide_02_why.mp3",
-        3: "slide_03_what_ai_is.mp3",
-        4: "slide_04_chatgpt.mp3",
-        5: "slide_05_ecosystem.mp3",
-        6: "slide_06_advanced.mp3",
-        7: "slide_07_entertainment.mp3",
-        8: "slide_08_safety.mp3",
-        9: "slide_09_qa.mp3",
-        10: "slide_10_outro.mp3",
-    }
-
-    audio_file = audio_map.get(slide, f"slide_{slide:02d}.mp3")
+    audio_file = _get_audio_file(slide)
 
     ws_messages = [
         {"type": "goto_slide", "data": {"slideIndex": slide}},
@@ -90,8 +99,9 @@ def asking_node(state: GraphState) -> dict:
         3: "ask_03_wrong.mp3",
         4: "ask_04_chatgpt.mp3",
         5: "ask_05_ecosystem.mp3",
-        6: "ask_06_automation.mp3",
-        7: "ask_07_creative.mp3",
+        6: "ask_06_prompt.mp3",             # NEW — Prompt Engineering
+        7: "ask_07_automation.mp3",         # was slide 6
+        8: "ask_08_creative.mp3",           # was slide 7
     }
 
     audio_file = question_audio_map.get(slide, f"ask_{slide:02d}.mp3")
@@ -178,15 +188,15 @@ def qa_mode_node(state: GraphState) -> dict:
     logger.info("Entering Q&A mode.")
 
     ws_messages = [
-        {"type": "goto_slide", "data": {"slideIndex": 9}},
+        {"type": "goto_slide", "data": {"slideIndex": 11}},
         {"type": "show_avatar", "data": {"mode": "speaking"}},
-        {"type": "play_audio", "data": {"audioUrl": "/audio/slide_09_qa.mp3", "audioType": "pre_generated"}},
+        {"type": "play_audio", "data": {"audioUrl": "/audio/slide_11_qa.mp3", "audioType": "pre_generated"}},
         {"type": "status", "data": {"state": "qa_mode", "message": "Q&A mode active. Use /pick N to answer questions."}},
     ]
 
     return {
         "agent_state": AgentState.QA_MODE,
-        "current_slide": 9,
+        "current_slide": 11,
         "is_audio_playing": True,
         "current_audio_type": AudioType.PRE_GENERATED,
         "ws_messages": ws_messages,
@@ -198,15 +208,15 @@ def outro_node(state: GraphState) -> dict:
     logger.info("Delivering outro.")
 
     ws_messages = [
-        {"type": "goto_slide", "data": {"slideIndex": 10}},
+        {"type": "goto_slide", "data": {"slideIndex": 12}},
         {"type": "show_avatar", "data": {"mode": "speaking"}},
-        {"type": "play_audio", "data": {"audioUrl": "/audio/slide_10_outro.mp3", "audioType": "pre_generated"}},
+        {"type": "play_audio", "data": {"audioUrl": "/audio/slide_12_outro.mp3", "audioType": "pre_generated"}},
         {"type": "status", "data": {"state": "outro", "message": "DexIQ is delivering closing remarks..."}},
     ]
 
     return {
         "agent_state": AgentState.OUTRO,
-        "current_slide": 10,
+        "current_slide": 12,
         "is_audio_playing": True,
         "current_audio_type": AudioType.PRE_GENERATED,
         "ws_messages": ws_messages,

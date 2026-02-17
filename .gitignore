@@ -51,3 +51,6 @@ chainlit.md
 *.log
 
 files/
+
+bash.exe.stackdump
+nul

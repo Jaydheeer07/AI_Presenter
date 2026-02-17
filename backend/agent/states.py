@@ -51,7 +51,7 @@ class GraphState(TypedDict):
     ws_messages: list[dict]
 
 
-def create_initial_state(total_slides: int = 11) -> GraphState:
+def create_initial_state(total_slides: int = 13) -> GraphState:
     """Create the initial state for a new presentation."""
     return GraphState(
         agent_state=AgentState.IDLE,

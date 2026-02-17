@@ -1,11 +1,11 @@
 # DexIQ AI Presenter - Presentation Configuration
-# STATUS: DRAFT - Review narration scripts before audio generation
+# STATUS: UPDATED — 13 slides with Dexterous Group branding
 
 presentation:
   title: "Lunch & Learn: Automations & Practical AI Tools for Everyday Work"
   presenter_name: "DexIQ"
   presenter_description: "AI Assistant for Dexterous Group"
-  total_slides: 11
+  total_slides: 13
 
 slides:
   - id: 0
@@ -30,7 +30,7 @@ slides:
     trigger: "intro"
 
   - id: 2
-    title: "Why We're Here"
+    title: "Why Should You Care About AI?"
     narration: >
       So why are we here today? Dexterous has always been about working smarter, not
       just harder. AI isn't just a buzzword anymore — it's a set of practical tools
@@ -68,7 +68,7 @@ slides:
       fallback_response: "That's a great example of why human oversight matters."
 
   - id: 4
-    title: "ChatGPT — The All-Purpose Assistant"
+    title: "ChatGPT & Large Language Models"
     narration: >
       Let's start with the tool most of you have probably heard of: ChatGPT. Think of
       ChatGPT as your all-purpose thinking partner. Its biggest strength is conversational
@@ -89,7 +89,7 @@ slides:
       fallback_response: "Great to hear! ChatGPT really shines in those everyday tasks."
 
   - id: 5
-    title: "Ecosystem Comparison"
+    title: "The AI Ecosystem"
     narration: >
       Now, ChatGPT is great, but it's not the only player. Let's compare the big four.
       ChatGPT is the most flexible for general conversation and thinking tasks. Microsoft
@@ -110,7 +110,29 @@ slides:
       fallback_response: "That's common — most teams end up using a mix these days."
 
   - id: 6
-    title: "Advanced Workflows & Technical Efficiency"
+    title: "How to Talk to AI — Prompt Engineering 101"
+    narration: >
+      Now here's something that can instantly make you better at using any AI tool:
+      prompt engineering. The difference between a mediocre AI response and a brilliant
+      one is all in how you ask. Let me show you what I mean. A vague prompt like 'write
+      me an email about the invoice' will get you something generic that needs heavy
+      editing. But an engineered prompt — where you give the AI a role, context, and
+      specific constraints — gets you something you can almost send as-is. For example:
+      'You are a professional accountant at an Australian firm. Write a polite follow-up
+      email to a client whose invoice 4521 is 14 days overdue. Keep it firm but friendly.
+      Use Australian English.' See the difference? Four quick tips: give it a role, be
+      specific about what you need, show it examples of what good looks like, and iterate
+      — refine through follow-up prompts until you get exactly what you want.
+    audio_file: "audio/slide_06_prompt_engineering.mp3"
+    has_interaction: true
+    interaction:
+      target: "TBD"
+      question: "What's a task where you've struggled to get AI to give you the right output?"
+      question_audio: "audio/ask_06_prompt.mp3"
+      fallback_response: "That's a perfect example of where better prompting can help."
+
+  - id: 7
+    title: "Advanced Use Cases"
     narration: >
       This slide is for those of you who are a bit more technically inclined, or who work
       with our development team. AI isn't just about writing emails — it's transforming
@@ -122,16 +144,16 @@ slides:
       merge conflicts. Even if you're not a developer, understanding that these
       capabilities exist helps you have better conversations with the people who build
       and maintain our systems.
-    audio_file: "audio/slide_06_advanced.mp3"
+    audio_file: "audio/slide_07_advanced.mp3"
     has_interaction: true
     interaction:
       target: "TBD"
       question: "Have you automated any part of your workflow, even something simple?"
-      question_audio: "audio/ask_06_automation.mp3"
+      question_audio: "audio/ask_07_automation.mp3"
       fallback_response: "Even small automations can save hours over time."
 
-  - id: 7
-    title: "AI for Entertainment & Creative Leisure"
+  - id: 8
+    title: "AI for Entertainment & Creativity"
     narration: >
       Now for the fun part. AI isn't just a work tool — it's also an incredible creative
       playground. You can use AI to generate cinematic visuals for personal video projects.
@@ -143,16 +165,16 @@ slides:
       aren't just toys — they're windows into where this technology is heading. And
       honestly, playing with AI creatively is one of the best ways to build intuition
       for using it professionally.
-    audio_file: "audio/slide_07_entertainment.mp3"
+    audio_file: "audio/slide_08_entertainment.mp3"
     has_interaction: true
     interaction:
       target: "TBD"
       question: "Has anyone here tried using AI for a personal creative project?"
-      question_audio: "audio/ask_07_creative.mp3"
+      question_audio: "audio/ask_08_creative.mp3"
       fallback_response: "I'd encourage everyone to try it — it's a great way to learn."
 
-  - id: 8
-    title: "AI Safety & Good Habits"
+  - id: 9
+    title: "AI Safety & Best Practices"
     narration: >
       Before we wrap up, let's talk about safety — because this is critical, especially
       in our industry. Rule number one: never paste sensitive client data into public AI
@@ -161,25 +183,40 @@ slides:
       tools like Microsoft Copilot, which is designed for business data security. Rule
       two: always fact-check AI output, especially numbers. AI can be confidently wrong
       about financial calculations, and in accounting, a wrong number isn't just
-      embarrassing — it's a liability. Rule three: keep the human in the loop. Let AI
-      handle the blank page syndrome — that first draft, that initial brainstorm — but
-      always add your expertise, your judgment, and your professional touch to the final
-      version.
-    audio_file: "audio/slide_08_safety.mp3"
+      embarrassing — it's a liability. Rule three: know your firm's AI policy and check
+      which tools are approved. Rule four: disclose AI use when required — transparency
+      builds trust with clients and stakeholders.
+    audio_file: "audio/slide_09_safety.mp3"
     has_interaction: false
 
-  - id: 9
+  - id: 10
+    title: "The Meta Moment"
+    narration: >
+      Now here's something fun — let me pull back the curtain and show you how this
+      presentation actually works. Right now, there's a human operator — we call them the
+      puppeteer — controlling the flow of this presentation using typed commands. Each
+      time a slide advances, my AI brain — that's Claude, by Anthropic — generates the
+      narration text you're hearing. That text is then sent to Kokoro, a text-to-speech
+      system running locally in a Docker container, which converts it into the voice
+      you're listening to right now. And finally, that audio plays through your speakers.
+      The whole pipeline — from command to voice — happens in seconds. And when you asked
+      me questions earlier? Those answers were generated live too. I'm not a recording.
+      Every word I've spoken today was generated just for this session.
+    audio_file: "audio/slide_10_meta_moment.mp3"
+    has_interaction: false
+
+  - id: 11
     title: "Q&A"
     narration: >
       Now it's your turn! If you have any questions about AI tools, how to use them,
-      or anything we covered today, scan the QR code on screen or visit the link. Type
-      your question and I'll answer it live right here. And yes — I'm actually generating
-      these answers in real time. Let's see what you've got.
-    audio_file: "audio/slide_09_qa.mp3"
+      or anything we covered today, just raise your hand or type your question. I'll
+      answer it live right here. And yes — I'm actually generating these answers in
+      real time. Let's see what you've got.
+    audio_file: "audio/slide_11_qa.mp3"
     has_interaction: false
     trigger: "qa"
 
-  - id: 10
+  - id: 12
     title: "Closing"
     narration: >
       Thank you all for your time and attention today. I hope I've given you a few ideas
@@ -188,6 +225,6 @@ slides:
       AI is a tool, and you are the craftsperson. The best results come when humans and AI
       work together, each doing what they do best. I've been DexIQ, your AI presenter,
       and it's been a pleasure. Now back to your regularly scheduled human. Thank you!
-    audio_file: "audio/slide_10_outro.mp3"
+    audio_file: "audio/slide_12_outro.mp3"
     has_interaction: false
     trigger: "outro"

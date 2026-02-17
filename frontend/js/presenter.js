@@ -81,7 +81,7 @@
                 break;
 
             case 'goto_slide':
-                Reveal.slide(data.slideIndex || 0);
+                gotoSlideAndRevealFragments(data.slideIndex || 0);
                 break;
 
             case 'play_audio':
@@ -134,6 +134,33 @@
             default:
                 console.log('[Presenter] Unknown message type:', type, data);
         }
+    }
+
+    // --- Slide Navigation ---
+
+    /**
+     * Navigate to a slide and immediately reveal all fragments on it.
+     * Reveal.slide() alone leaves fragments at opacity:0 — they only appear
+     * when stepping through with Reveal.next(). Since the backend jumps
+     * directly to slides, we need to force-show all fragments so the
+     * audience sees the full slide content at once.
+     */
+    function gotoSlideAndRevealFragments(slideIndex) {
+        // Navigate to the target slide
+        Reveal.slide(slideIndex, 0, 0);
+
+        // Small delay to let Reveal.js finish its slide transition and DOM update
+        setTimeout(function () {
+            // Get the current slide element
+            var currentSlide = Reveal.getCurrentSlide();
+            if (currentSlide) {
+                // Find all fragment elements on this slide and mark them as visible
+                var fragments = currentSlide.querySelectorAll('.fragment');
+                for (var i = 0; i < fragments.length; i++) {
+                    fragments[i].classList.add('visible');
+                }
+            }
+        }, 100);
     }
 
     // --- Audio Playback ---

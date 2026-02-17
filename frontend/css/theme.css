@@ -1,200 +1,1104 @@
-/* DexIQ AI Presenter — Custom Reveal.js Theme Overrides */
+/* ═══════════════════════════════════════════════════════════
+   DexIQ AI Presenter — Dexterous Brand Theme
+   Color palette: Teal/Blue gradient, Navy background, Gold accents
+   Fonts: Plus Jakarta Sans (display), Space Mono (code/badges)
+   ═══════════════════════════════════════════════════════════ */
 
+/* ─── Google Fonts Import ─── */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
+
+/* ─── CSS Variables ─── */
 :root {
-    --dexiq-primary: #667eea;
-    --dexiq-secondary: #764ba2;
-    --dexiq-accent: #00d4ff;
-    --dexiq-bg: #0f0c29;
-    --dexiq-text: #e0e0f0;
-    --dexiq-muted: #a0a0c0;
+  /* Dexterous Brand Palette */
+  --dex-teal:         #00B4D8;
+  --dex-teal-dark:    #0096B7;
+  --dex-teal-glow:    rgba(0, 180, 216, 0.4);
+  --dex-cyan:         #00D4AA;
+  --dex-blue:         #0077B6;
+  --dex-blue-deep:    #004E8C;
+  --dex-navy:         #0A1628;
+  --dex-navy-light:   #132240;
+  --dex-navy-card:    rgba(255, 255, 255, 0.04);
+  --dex-gold:         #F5A623;
+  --dex-gold-hover:   #FFB833;
+  --dex-red:          #FF6B6B;
+  --dex-green:        #00D4AA;
+  --dex-white:        #FFFFFF;
+  --dex-gray:         #B8C5D6;
+  --dex-gray-dim:     #7A8BA3;
+  --dex-border:       rgba(255, 255, 255, 0.08);
+  --dex-border-hover: rgba(0, 180, 216, 0.25);
+
+  /* Gradients */
+  --dex-gradient:     linear-gradient(135deg, #00B4D8 0%, #0077B6 50%, #004E8C 100%);
+  --dex-gradient-h:   linear-gradient(90deg, #00D4AA 0%, #00B4D8 40%, #0077B6 100%);
+  --dex-gradient-sub: linear-gradient(135deg, #132240 0%, #0A1628 100%);
+
+  /* Fonts */
+  --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:    'Space Mono', 'SF Mono', 'Fira Code', monospace;
+
+  /* ── Reveal.js Theme Variable Overrides ──
+     black.css is loaded first and provides all --r-* defaults.
+     We override only the ones that differ for Dexterous brand. */
+  --r-background-color: #0A1628;
+  --r-main-font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --r-main-font-size: 42px;  /* Keep Reveal.js default — it uses this for internal scale base */
+  --r-main-color: #FFFFFF;
+  --r-heading-font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --r-heading-color: #FFFFFF;
+  --r-heading-text-transform: none;
+  --r-heading-text-shadow: none;
+  --r-heading-font-weight: 800;
+  --r-code-font: 'Space Mono', 'SF Mono', 'Fira Code', monospace;
+  --r-link-color: #00B4D8;
+  --r-link-color-dark: #0096B7;
+  --r-link-color-hover: #00D4AA;
+  --r-selection-background-color: rgba(0, 180, 216, 0.3);
+  --r-selection-color: #fff;
 }
 
-/* Global overrides */
+/* ─── Body & Root Backgrounds ─── */
+html, body {
+  background: #0A1628;
+  margin: 0;
+  padding: 0;
+}
+
+/* Ensure Reveal's auto-generated slide backgrounds are navy */
+.reveal .slide-background {
+  background-color: #0A1628;
+}
+
+/* ─── Reveal.js Overrides ──────────────────────────────────
+   center is DISABLED in Reveal config. We handle vertical
+   centering ourselves with flexbox, just like the reference
+   preview. This avoids Reveal.js miscalculating scrollHeight
+   when absolute-positioned decorative elements are present. */
 .reveal {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    color: var(--dexiq-text);
+  font-family: var(--font-display);
+  font-size: 1rem;  /* Override Reveal's 42px base — our slide content uses explicit sizes */
+  color: var(--dex-white);
 }
 
 .reveal .slides {
-    text-align: left;
+  text-align: left;
+}
+
+.reveal .slides section {
+  color: var(--dex-white);
+  padding: 50px 70px;
+  box-sizing: border-box;
+  /* NOTE: Do NOT set position:relative — Reveal.js needs position:absolute
+     on sections for slide stacking. position:absolute also establishes a
+     positioning context, so child elements with position:absolute still
+     reference this section correctly. */
+  text-align: left;
+  overflow: hidden;  /* Clip oversized decorations like bg-arcs */
+
+  /* Fill the full slide canvas */
+  height: 100%;
+
+  /* Reset Reveal's top offset — we handle centering via flex */
+  top: 0 !important;
+}
+
+/* Flexbox centering — only on the PRESENT (visible) slide.
+   Reveal.js sets display:block on .present and display:none on others.
+   We override only the visible slide to flex so hidden slides stay hidden. */
+.reveal .slides section.present {
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.reveal p {
+  color: var(--dex-gray);
+  line-height: 1.6;
+}
+
+.reveal .progress span {
+  background: var(--dex-gradient-h);
 }
 
 .reveal h1, .reveal h2, .reveal h3 {
-    color: #fff;
-    font-weight: 700;
-    text-transform: none;
-    letter-spacing: -0.02em;
+  margin: 0;
+  text-transform: none;
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  text-shadow: none;
+  color: var(--dex-white);
 }
 
-.reveal h2 {
-    font-size: 1.8em;
-    margin-bottom: 0.6em;
+/* ─── Gradient Mesh Background ─── */
+.gradient-mesh {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
 }
 
-.reveal ul {
-    list-style: none;
-    padding: 0;
+.gradient-mesh::before {
+  content: '';
+  position: absolute;
+  width: 130%;
+  height: 130%;
+  top: -15%;
+  left: -15%;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(0, 180, 216, 0.25) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 20%, rgba(0, 119, 182, 0.20) 0%, transparent 50%),
+    radial-gradient(ellipse at 60% 80%, rgba(0, 212, 170, 0.12) 0%, transparent 45%);
+  animation: meshFloat 22s ease-in-out infinite alternate;
 }
 
-.reveal ul li {
-    margin-bottom: 0.6em;
-    font-size: 0.85em;
-    line-height: 1.5;
-    padding-left: 0.2em;
+@keyframes meshFloat {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(-15px, 8px) scale(1.04); }
 }
 
-.reveal strong {
-    color: #fff;
+/* ─── Background Arcs (Dexterous signature curves) ─── */
+.bg-arcs {
+  position: absolute;
+  left: -200px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 500px;
+  height: 700px;
+  pointer-events: none;
+  z-index: 0;
 }
 
-.reveal em {
-    color: var(--dexiq-accent);
-    font-style: italic;
+.bg-arcs .arc {
+  position: absolute;
+  border: 3px solid rgba(255, 255, 255, 0.10);
+  border-radius: 50%;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
 }
 
-/* Subtitle styling */
-.subtitle {
-    font-size: 0.7em;
-    color: var(--dexiq-muted);
-    margin-top: 1em;
+.bg-arcs .arc:nth-child(1) { width: 300px; height: 300px; top: 50px;  left: 80px;  animation: arcSpin 30s linear infinite; }
+.bg-arcs .arc:nth-child(2) { width: 400px; height: 400px; top: 0;    left: 30px;  animation: arcSpin 40s linear infinite reverse; }
+.bg-arcs .arc:nth-child(3) { width: 500px; height: 500px; top: -50px; left: -20px; animation: arcSpin 50s linear infinite; }
+.bg-arcs .arc:nth-child(4) { width: 600px; height: 600px; top: -100px;left: -70px; animation: arcSpin 60s linear infinite reverse; }
+
+@keyframes arcSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
-.org {
-    font-size: 0.6em;
-    color: var(--dexiq-muted);
-    margin-top: 0.5em;
+/* ─── Watermark Arcs (bottom-right) ─── */
+.watermark-arcs {
+  position: absolute;
+  right: -100px;
+  bottom: -100px;
+  width: 380px;
+  height: 380px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.06;
+}
+
+.watermark-arcs .warc {
+  position: absolute;
+  border: 4px solid white;
+  border-radius: 50%;
+  border-left-color: transparent;
+  border-top-color: transparent;
+}
+
+.watermark-arcs .warc:nth-child(1) { width: 180px; height: 180px; bottom: 60px; right: 60px; }
+.watermark-arcs .warc:nth-child(2) { width: 260px; height: 260px; bottom: 20px; right: 20px; }
+.watermark-arcs .warc:nth-child(3) { width: 340px; height: 340px; bottom: -20px; right: -20px; }
+
+/* ─── Slide Content (z-index above backgrounds) ─── */
+.slide-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Shared Typography ─── */
+.badge {
+  display: inline-block;
+  background: rgba(0, 180, 216, 0.12);
+  border: 1px solid rgba(0, 180, 216, 0.25);
+  color: var(--dex-teal);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 100px;
+  margin-bottom: 20px;
+}
+
+.slide-title {
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.15;
+  margin-bottom: 16px;
+  color: var(--dex-white);
+}
+
+.slide-title .highlight-teal {
+  background: var(--dex-gradient-h);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.slide-title .highlight-gold {
+  color: var(--dex-gold);
 }
 
 .slide-subtitle {
-    font-size: 0.7em;
-    color: var(--dexiq-muted);
-    margin-bottom: 1em;
-    font-style: italic;
+  font-size: 1.05rem;
+  color: var(--dex-gray);
+  max-width: 600px;
+  line-height: 1.7;
+  font-weight: 400;
 }
 
-/* Intro card */
-.intro-card, .outro-card {
-    text-align: center;
-    padding: 2em;
+/* ═══════════════════════════════════════════
+   SLIDE 0 — Title Slide
+   ═══════════════════════════════════════════ */
+.title-slide {}
+
+.title-badge {
+  display: inline-block;
+  background: rgba(0, 180, 216, 0.12);
+  border: 1px solid rgba(0, 180, 216, 0.25);
+  color: var(--dex-teal);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 100px;
+  margin-bottom: 20px;
 }
 
-.ai-icon {
-    font-size: 3em;
-    margin-bottom: 0.3em;
+.title-main {
+  font-size: clamp(2.8rem, 5.5vw, 4.5rem);
+  font-weight: 800;
+  line-height: 1.08;
+  margin-bottom: 20px;
 }
 
-/* Comparison table */
-.comparison-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.7em;
-    margin-top: 1em;
+.title-main .highlight-teal {
+  background: var(--dex-gradient-h);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.comparison-table th {
-    background: rgba(102, 126, 234, 0.2);
-    padding: 0.6em 0.8em;
-    text-align: left;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+.title-main .highlight-gold {
+  color: var(--dex-gold);
 }
 
-.comparison-table td {
-    padding: 0.5em 0.8em;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+.title-sub {
+  font-size: 1.15rem;
+  color: var(--dex-gray);
+  max-width: 600px;
+  line-height: 1.7;
 }
 
-/* Q&A card */
-.qa-card {
-    text-align: center;
-    padding: 1.5em;
+.stats-row {
+  display: flex;
+  gap: 48px;
+  margin-top: 36px;
 }
 
-.qa-url {
-    font-size: 1.2em;
-    color: var(--dexiq-accent);
-    font-weight: 600;
-    margin: 0.5em 0;
+.stat-item { text-align: left; }
+
+.stat-value {
+  font-size: 2.4rem;
+  font-weight: 800;
+  background: var(--dex-gradient-h);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.qr-placeholder {
-    width: 200px;
-    height: 200px;
-    margin: 1em auto;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.8em;
-    color: var(--dexiq-muted);
+.stat-label {
+  font-size: 0.78rem;
+  color: var(--dex-gray-dim);
+  margin-top: 2px;
 }
 
-/* Question overlay */
-.question-overlay {
-    position: fixed;
-    bottom: 120px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 100;
-    transition: opacity 0.4s ease;
+/* ═══════════════════════════════════════════
+   SLIDE 1 — Intro
+   ═══════════════════════════════════════════ */
+.intro-slide {}
+
+.intro-features {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  flex-wrap: wrap;
 }
 
-.question-overlay.hidden {
-    opacity: 0;
-    pointer-events: none;
+.feature-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--dex-navy-card);
+  border: 1px solid var(--dex-border);
+  padding: 8px 16px;
+  border-radius: 100px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--dex-gray);
+  transition: all 0.3s ease;
 }
 
-.question-card {
-    background: rgba(102, 126, 234, 0.15);
-    border: 1px solid rgba(102, 126, 234, 0.4);
-    border-radius: 16px;
-    padding: 20px 32px;
-    max-width: 600px;
-    text-align: center;
-    backdrop-filter: blur(10px);
+.feature-chip:hover {
+  border-color: var(--dex-border-hover);
+  color: var(--dex-white);
 }
 
-.question-target {
-    font-size: 0.9em;
-    color: var(--dexiq-accent);
-    font-weight: 600;
-    margin-bottom: 8px;
+.intro-quote {
+  margin-top: 28px;
+  padding: 20px 24px;
+  border-left: 3px solid var(--dex-teal);
+  background: rgba(0, 180, 216, 0.06);
+  border-radius: 0 12px 12px 0;
+  font-size: 0.95rem;
+  color: var(--dex-gray);
+  font-style: italic;
+  max-width: 560px;
+  line-height: 1.6;
 }
 
-.question-text {
-    font-size: 1.1em;
-    color: #fff;
-    line-height: 1.4;
+/* ═══════════════════════════════════════════
+   SLIDE 2 — Three Cards (Why AI)
+   ═══════════════════════════════════════════ */
+.three-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 32px;
 }
 
-/* Response overlay */
+.info-card {
+  background: var(--dex-navy-card);
+  border: 1px solid var(--dex-border);
+  border-radius: 16px;
+  padding: 26px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.info-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--dex-gradient-h);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.info-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--dex-border-hover);
+  transform: translateY(-3px);
+}
+
+.info-card:hover::before { opacity: 1; }
+
+.info-card .card-icon {
+  font-size: 28px;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.info-card .card-label {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--dex-white);
+}
+
+.info-card .card-text {
+  font-size: 0.82rem;
+  color: var(--dex-gray);
+  line-height: 1.6;
+}
+
+/* ═══════════════════════════════════════════
+   SLIDE 3 — Two Columns (Is / Isn't)
+   ═══════════════════════════════════════════ */
+.two-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  margin-top: 28px;
+}
+
+.column {
+  background: var(--dex-navy-card);
+  border: 1px solid var(--dex-border);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.column-header {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid;
+}
+
+.column-header.teal {
+  color: var(--dex-teal);
+  border-bottom-color: var(--dex-teal);
+}
+
+.column-header.gold {
+  color: var(--dex-gold);
+  border-bottom-color: var(--dex-gold);
+}
+
+.clean-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.list-item {
+  font-size: 0.88rem;
+  color: var(--dex-gray);
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  line-height: 1.5;
+}
+
+.list-item:last-child { border-bottom: none; }
+
+.golden-rule {
+  margin-top: 24px;
+  padding: 16px 22px;
+  background: rgba(245, 166, 35, 0.08);
+  border: 1px solid rgba(245, 166, 35, 0.2);
+  border-radius: 12px;
+  font-size: 0.9rem;
+  color: var(--dex-gold);
+  text-align: center;
+}
+
+.golden-rule strong { color: var(--dex-gold-hover); }
+
+/* ═══════════════════════════════════════════
+   SLIDES 4, 7, 8 — Icon Grid (2x2)
+   ═══════════════════════════════════════════ */
+.icon-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: 28px;
+}
+
+.icon-item {
+  background: var(--dex-navy-card);
+  border: 1px solid var(--dex-border);
+  border-radius: 14px;
+  padding: 22px;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  transition: all 0.3s ease;
+}
+
+.icon-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--dex-border-hover);
+}
+
+.icon-circle {
+  width: 44px;
+  height: 44px;
+  background: rgba(0, 180, 216, 0.1);
+  border: 1px solid rgba(0, 180, 216, 0.2);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.icon-label {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--dex-white);
+  margin-bottom: 4px;
+}
+
+.icon-desc {
+  font-size: 0.78rem;
+  color: var(--dex-gray);
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════
+   SLIDE 5 — Tool Cards (AI Ecosystem)
+   ═══════════════════════════════════════════ */
+.tool-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 28px;
+}
+
+.tool-card {
+  background: var(--dex-navy-card);
+  border: 1px solid var(--dex-border);
+  border-radius: 14px;
+  padding: 22px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.tool-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--dex-border-hover);
+  transform: translateY(-3px);
+}
+
+.tool-color {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+}
+
+.tool-card .card-icon {
+  font-size: 28px;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.tool-card .card-label {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--dex-white);
+  margin-bottom: 8px;
+}
+
+.tool-card .card-text {
+  font-size: 0.75rem;
+  color: var(--dex-gray);
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.tool-tip {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--dex-teal);
+  letter-spacing: 0.5px;
+  padding-top: 10px;
+  border-top: 1px solid var(--dex-border);
+}
+
+/* ═══════════════════════════════════════════
+   SLIDE 6 — Prompt Comparison (NEW)
+   ═══════════════════════════════════════════ */
+.prompt-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  margin-top: 24px;
+}
+
+.prompt-box {
+  border-radius: 14px;
+  padding: 22px;
+  position: relative;
+}
+
+.bad-prompt {
+  background: rgba(255, 107, 107, 0.06);
+  border: 1px solid rgba(255, 107, 107, 0.18);
+}
+
+.good-prompt {
+  background: rgba(0, 212, 170, 0.06);
+  border: 1px solid rgba(0, 212, 170, 0.18);
+}
+
+.prompt-label {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.bad-prompt .prompt-label { color: var(--dex-red); }
+.good-prompt .prompt-label { color: var(--dex-green); }
+
+.prompt-code {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--dex-white);
+  line-height: 1.7;
+  padding: 14px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.prompt-result {
+  font-size: 0.78rem;
+  color: var(--dex-gray-dim);
+  font-style: italic;
+}
+
+.prompt-tips {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.tip-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--dex-navy-card);
+  border: 1px solid var(--dex-border);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.tip-item:hover {
+  border-color: var(--dex-border-hover);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.tip-num {
+  width: 28px;
+  height: 28px;
+  background: var(--dex-gradient);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: white;
+  flex-shrink: 0;
+}
+
+.tip-text {
+  font-size: 0.8rem;
+  color: var(--dex-gray);
+  line-height: 1.5;
+}
+
+.tip-text strong {
+  color: var(--dex-white);
+}
+
+/* ═══════════════════════════════════════════
+   SLIDE 9 — Safety Rules
+   ═══════════════════════════════════════════ */
+.safety-rules {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.safety-rule {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  padding: 18px 22px;
+  background: var(--dex-navy-card);
+  border: 1px solid var(--dex-border);
+  border-radius: 14px;
+  transition: all 0.3s ease;
+}
+
+.safety-rule:hover {
+  border-color: var(--dex-border-hover);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.rule-number {
+  width: 36px;
+  height: 36px;
+  background: rgba(245, 166, 35, 0.12);
+  border: 1px solid rgba(245, 166, 35, 0.25);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--dex-gold);
+  flex-shrink: 0;
+}
+
+.rule-content {}
+
+.rule-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--dex-white);
+  margin-bottom: 4px;
+}
+
+.rule-desc {
+  font-size: 0.78rem;
+  color: var(--dex-gray);
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════
+   SLIDE 10 — Meta Flow (NEW)
+   ═══════════════════════════════════════════ */
+.meta-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 36px;
+  flex-wrap: wrap;
+}
+
+.flow-step {
+  background: var(--dex-navy-light);
+  border: 1px solid rgba(0, 180, 216, 0.18);
+  border-radius: 14px;
+  padding: 20px 24px;
+  text-align: center;
+  min-width: 130px;
+  transition: all 0.3s ease;
+}
+
+.flow-step:hover {
+  border-color: var(--dex-teal);
+  box-shadow: 0 0 24px rgba(0, 180, 216, 0.12);
+}
+
+.flow-icon {
+  font-size: 26px;
+  margin-bottom: 8px;
+}
+
+.flow-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--dex-white);
+  margin-bottom: 4px;
+}
+
+.flow-desc {
+  font-size: 0.68rem;
+  color: var(--dex-gray);
+  line-height: 1.4;
+}
+
+.flow-arrow {
+  color: var(--dex-teal);
+  font-size: 20px;
+  opacity: 0.5;
+  animation: arrowPulse 2s ease-in-out infinite;
+}
+
+@keyframes arrowPulse {
+  0%, 100% { opacity: 0.3; transform: translateX(0); }
+  50% { opacity: 0.7; transform: translateX(3px); }
+}
+
+.meta-quote {
+  margin-top: 30px;
+  text-align: center;
+  padding: 18px 28px;
+  border-left: none;
+  border: 1px solid rgba(0, 180, 216, 0.15);
+  background: rgba(0, 180, 216, 0.05);
+  border-radius: 12px;
+  font-size: 0.92rem;
+  color: var(--dex-gray);
+  font-style: italic;
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+/* ═══════════════════════════════════════════
+   SLIDE 11 — Q&A
+   ═══════════════════════════════════════════ */
+.qa-layout {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.qa-steps {
+  display: flex;
+  gap: 20px;
+  margin-top: 32px;
+}
+
+.qa-step {
+  background: var(--dex-navy-card);
+  border: 1px solid var(--dex-border);
+  border-radius: 14px;
+  padding: 22px 28px;
+  text-align: center;
+  min-width: 200px;
+  transition: all 0.3s ease;
+}
+
+.qa-step:hover {
+  border-color: var(--dex-border-hover);
+}
+
+.step-num {
+  width: 40px;
+  height: 40px;
+  background: var(--dex-gradient);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 800;
+  color: white;
+  margin: 0 auto 12px;
+}
+
+.step-text {
+  font-size: 0.85rem;
+  color: var(--dex-gray);
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════
+   SLIDE 12 — Outro
+   ═══════════════════════════════════════════ */
+.outro-slide {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.outro-quote {
+  margin-top: 24px;
+  padding: 20px 28px;
+  border: 1px solid rgba(0, 180, 216, 0.15);
+  background: rgba(0, 180, 216, 0.05);
+  border-radius: 12px;
+  font-size: 0.95rem;
+  color: var(--dex-gray);
+  font-style: italic;
+  max-width: 580px;
+  line-height: 1.6;
+}
+
+.takeaway-chips {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.takeaway-chip {
+  display: inline-block;
+  background: rgba(245, 166, 35, 0.1);
+  border: 1px solid rgba(245, 166, 35, 0.25);
+  color: var(--dex-gold);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: 100px;
+}
+
+/* ═══════════════════════════════════════════
+   Overlays (Question / Response)
+   ═══════════════════════════════════════════ */
+.question-overlay,
 .response-overlay {
-    position: fixed;
-    bottom: 120px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 100;
-    transition: opacity 0.4s ease;
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: overlayFadeIn 0.4s ease-out;
 }
 
+.question-overlay.hidden,
 .response-overlay.hidden {
-    opacity: 0;
-    pointer-events: none;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(20px);
+  transition: all 0.3s ease;
 }
 
+@keyframes overlayFadeIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.overlay-content,
+.question-card,
 .response-card {
-    background: rgba(118, 75, 162, 0.15);
-    border: 1px solid rgba(118, 75, 162, 0.4);
-    border-radius: 16px;
-    padding: 20px 32px;
-    max-width: 600px;
-    text-align: center;
-    backdrop-filter: blur(10px);
+  background: var(--dex-navy-light);
+  border: 1px solid var(--dex-border);
+  border-radius: 16px;
+  padding: 20px 28px;
+  max-width: 680px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.question-overlay .overlay-content,
+.question-card {
+  border-color: rgba(245, 166, 35, 0.3);
+}
+
+.response-overlay .overlay-content,
+.response-card {
+  border-color: rgba(0, 180, 216, 0.3);
+}
+
+.overlay-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.question-overlay .overlay-label,
+.question-target {
+  color: var(--dex-gold);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.response-overlay .overlay-label {
+  color: var(--dex-teal);
+}
+
+.overlay-text,
+.question-text {
+  font-size: 1rem;
+  color: var(--dex-white);
+  line-height: 1.6;
 }
 
 .response-text {
-    font-size: 1em;
-    color: #fff;
-    line-height: 1.5;
-    font-style: italic;
+  font-size: 1rem;
+  color: var(--dex-white);
+  line-height: 1.5;
+  font-style: italic;
+}
+
+/* ═══════════════════════════════════════════
+   Click-to-Start Overlay
+   ═══════════════════════════════════════════ */
+.start-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 22, 40, 0.92);
+  backdrop-filter: blur(20px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
+  cursor: pointer;
+  transition: opacity 0.5s ease;
+}
+
+.start-overlay .start-icon {
+  font-size: 3.5rem;
+  animation: startPulse 2s ease-in-out infinite;
+}
+
+@keyframes startPulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
+
+.start-overlay .start-title {
+  color: var(--dex-white);
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-family: var(--font-display);
+}
+
+.start-overlay .start-subtitle {
+  color: var(--dex-gray-dim);
+  font-size: 0.9rem;
+  font-family: var(--font-display);
+}
+
+/* ═══════════════════════════════════════════
+   Fragment Animation Override
+   Fragments are disabled (Reveal config: fragments: false)
+   but just in case any .fragment classes remain, ensure
+   they are always visible so content never hides.
+   ═══════════════════════════════════════════ */
+.reveal .fragment {
+  opacity: 1 !important;
+  transform: none !important;
+  visibility: visible !important;
+}
+
+/* ═══════════════════════════════════════════
+   Polish: Subtle glow effects on cards
+   ═══════════════════════════════════════════ */
+.info-card:hover,
+.icon-item:hover,
+.tool-card:hover,
+.tip-item:hover,
+.safety-rule:hover,
+.flow-step:hover,
+.qa-step:hover {
+  box-shadow: 0 4px 24px rgba(0, 180, 216, 0.08);
+}
+
+/* Subtle gradient line at bottom of slide for visual depth */
+.reveal .slides section::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(0, 180, 216, 0.15) 50%, transparent 100%);
+  z-index: 2;
 }
