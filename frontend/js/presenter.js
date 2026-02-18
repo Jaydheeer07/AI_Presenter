@@ -9,7 +9,8 @@
     'use strict';
 
     // --- Configuration ---
-    const WS_URL = `ws://${window.location.host}/ws/presenter`;
+    const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+    const WS_URL = `${wsProtocol}://${window.location.host}/ws/presenter`;
     const RECONNECT_DELAY = 3000;
 
     // --- DOM Elements ---
