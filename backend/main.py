@@ -8,6 +8,7 @@ actions to the presenter screen via WebSocket.
 import asyncio
 import logging
 import os
+import uuid
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -49,6 +50,8 @@ presentation_state: GraphState = create_initial_state()
 
 # Pending command queue — holds one command to auto-execute when audio finishes
 _pending_queued_command: dict | None = None
+# Active playback token — used to ignore stale audio_ended events
+_active_playback_token: str | None = None
 
 # Presentation config cache
 _presentation_config: dict = {}
@@ -223,7 +226,7 @@ async def handle_command(raw_text: str) -> dict:
     Returns:
         Result dict with status and details.
     """
-    global presentation_state, _pending_queued_command
+    global presentation_state, _pending_queued_command, _active_playback_token
 
     command = parse_command(raw_text)
 
@@ -253,6 +256,7 @@ async def handle_command(raw_text: str) -> dict:
     # Handle /skip — stop current audio, clear queued command, go idle
     if command.type == "skip":
         _pending_queued_command = None
+        _active_playback_token = None
         presentation_state["is_audio_playing"] = False
         presentation_state["agent_state"] = AgentState.IDLE
         await presenter.broadcast_to_presenters({
@@ -328,7 +332,7 @@ async def handle_command(raw_text: str) -> dict:
 
 async def _run_graph() -> dict:
     """Run the LangGraph state machine with the current state."""
-    global presentation_state
+    global presentation_state, _active_playback_token
 
     try:
         result = await asyncio.to_thread(
@@ -343,6 +347,10 @@ async def _run_graph() -> dict:
         # Send WebSocket messages to presenter screen
         ws_messages = result.get("ws_messages", [])
         for msg in ws_messages:
+            if msg.get("type") == "play_audio":
+                playback_token = uuid.uuid4().hex
+                _active_playback_token = playback_token
+                msg.setdefault("data", {})["playbackToken"] = playback_token
             await presenter.broadcast_to_presenters(msg)
 
         # Send status update to control interface
@@ -368,7 +376,7 @@ async def _process_audience_response(answer_summary: str) -> dict:
 
     Pipeline: answer summary → Claude API → ElevenLabs TTS → presenter screen.
     """
-    global presentation_state
+    global presentation_state, _active_playback_token
 
     target = presentation_state.get("current_target", "someone")
     question = presentation_state.get("current_question", "")
@@ -416,9 +424,11 @@ async def _process_audience_response(answer_summary: str) -> dict:
             presentation_state["current_audio_type"] = "live_tts"
 
             # Signal presenter to prepare for streaming audio
+            playback_token = uuid.uuid4().hex
+            _active_playback_token = playback_token
             await presenter.broadcast_to_presenters({
                 "type": "stream_audio_start",
-                "data": {"responseText": response_text},
+                "data": {"responseText": response_text, "playbackToken": playback_token},
             })
             await presenter.broadcast_to_presenters({
                 "type": "show_avatar",
@@ -454,7 +464,7 @@ async def _process_qa_pick(question_id: int) -> dict:
 
     Pipeline: fetch question → Claude API → ElevenLabs TTS → stream to presenter.
     """
-    global presentation_state
+    global presentation_state, _active_playback_token
 
     if question_id is None:
         return {"status": "error", "message": "/pick requires a question ID."}
@@ -502,10 +512,12 @@ async def _process_qa_pick(question_id: int) -> dict:
         if tts_is_configured():
             presentation_state["is_audio_playing"] = True
             presentation_state["current_audio_type"] = "live_tts"
+            playback_token = uuid.uuid4().hex
+            _active_playback_token = playback_token
 
             await presenter.broadcast_to_presenters({
                 "type": "stream_audio_start",
-                "data": {"responseText": answer_text},
+                "data": {"responseText": answer_text, "playbackToken": playback_token},
             })
             await presenter.broadcast_to_presenters({
                 "type": "show_avatar",
@@ -533,9 +545,20 @@ async def _process_qa_pick(question_id: int) -> dict:
         return {"status": "fallback", "answer": fallback, "error": str(e)}
 
 
-async def handle_audio_complete():
+async def handle_audio_complete(playback_token: str | None = None):
     """Called when the presenter screen reports audio playback finished."""
-    global presentation_state
+    global presentation_state, _active_playback_token
+
+    if _active_playback_token:
+        if playback_token != _active_playback_token:
+            logger.info(
+                "Ignoring stale audio_ended event (token=%s, active=%s)",
+                playback_token,
+                _active_playback_token,
+            )
+            return
+
+    _active_playback_token = None
 
     presentation_state["is_audio_playing"] = False
 

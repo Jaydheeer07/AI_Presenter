@@ -9,7 +9,7 @@ import pytest
 from backend.models.presentation import AgentState, AudioType
 
 
-def create_initial_state(total_slides: int = 11) -> dict:
+def create_initial_state(total_slides: int = 15) -> dict:
     """Create a test-friendly initial state dict (no langgraph dependency)."""
     return {
         "agent_state": AgentState.IDLE,
@@ -59,7 +59,7 @@ class TestInitialState:
         state = create_initial_state()
         assert state["agent_state"] == AgentState.IDLE
         assert state["current_slide"] == 0
-        assert state["total_slides"] == 11
+        assert state["total_slides"] == 15
         assert state["is_audio_playing"] is False
         assert state["pending_command"] is None
 
@@ -99,10 +99,10 @@ class TestRouteNextCommand:
 
     def test_next_at_last_slide(self):
         state = create_initial_state()
-        state["current_slide"] = 10
+        state["current_slide"] = 14
         state["pending_command"] = {"type": "next", "payload": {}}
         result = route_next_command(state)
-        assert result["current_slide"] == 10  # Clamped to max
+        assert result["current_slide"] == 14  # Clamped to max
 
     def test_prev_command(self):
         state = create_initial_state()
@@ -128,7 +128,7 @@ class TestRouteNextCommand:
         state = create_initial_state()
         state["pending_command"] = {"type": "goto", "payload": {"slide_number": 99}}
         result = route_next_command(state)
-        assert result["current_slide"] == 10  # Clamped to total_slides - 1
+        assert result["current_slide"] == 14  # Clamped to total_slides - 1
 
     def test_ask_command(self):
         state = create_initial_state()

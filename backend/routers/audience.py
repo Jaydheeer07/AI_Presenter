@@ -5,6 +5,7 @@ Questions are received here, filtered, and queued for the AI to answer.
 """
 
 import logging
+import asyncio
 
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
@@ -38,14 +39,24 @@ async def submit_question(submission: QuestionSubmission):
 
     # Persist to Supabase (non-blocking, best-effort)
     from backend.services import supabase_service
-    import asyncio
-    asyncio.get_event_loop().run_in_executor(
+    loop = asyncio.get_running_loop()
+    persist_future = loop.run_in_executor(
         None,
         supabase_service.persist_question,
         question.id,
         question.name,
         question.question,
     )
+
+    def _log_persist_result(fut: asyncio.Future):
+        try:
+            ok = fut.result()
+            if not ok:
+                logger.warning(f"Supabase persist returned False for question #{question.id}")
+        except Exception as e:
+            logger.warning(f"Supabase persist failed for question #{question.id}: {e}")
+
+    persist_future.add_done_callback(_log_persist_result)
 
     # Trigger async filtering
     asyncio.create_task(filter_and_queue_question(question.id))

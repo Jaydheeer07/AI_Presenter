@@ -31,6 +31,8 @@
     // --- WebSocket Connection ---
     let ws = null;
     let reconnectTimer = null;
+    let currentPlaybackToken = null;
+    let suppressEndedEvent = false;
 
     function connect() {
         if (ws && ws.readyState === WebSocket.OPEN) return;
@@ -85,15 +87,15 @@
                 break;
 
             case 'play_audio':
-                playPreGenAudio(data.audioUrl, data.fallback);
+                playPreGenAudio(data.audioUrl, data.fallback, data.playbackToken || null);
                 break;
 
             case 'play_live_audio':
-                playLiveAudio(data.audioData, data.responseText);
+                playLiveAudio(data.audioData, data.responseText, data.playbackToken || null);
                 break;
 
             case 'stream_audio_start':
-                startStreamingAudio(data.responseText);
+                startStreamingAudio(data.responseText, data.playbackToken || null);
                 break;
 
             case 'audio_chunk':
@@ -165,8 +167,10 @@
 
     // --- Audio Playback ---
 
-    function playPreGenAudio(audioUrl, fallback) {
+    function playPreGenAudio(audioUrl, fallback, playbackToken) {
         hideOverlays();
+        currentPlaybackToken = playbackToken || `local-${Date.now()}-${Math.random()}`;
+        suppressEndedEvent = false;
 
         const separator = audioUrl.indexOf('?') >= 0 ? '&' : '?';
         const cacheBustedUrl = `${audioUrl}${separator}v=${Date.now()}`;
@@ -182,7 +186,11 @@
                     console.log('[Presenter] Audio file missing, continuing without audio.');
                 }
                 // Notify backend that audio "ended" even if it failed
-                sendToBackend('audio_ended', { error: 'play_failed' });
+                sendToBackend('audio_ended', {
+                    error: 'play_failed',
+                    playbackToken: currentPlaybackToken,
+                });
+                currentPlaybackToken = null;
             });
         }
     }
@@ -193,12 +201,21 @@
         if (error) {
             console.warn('[Presenter] Audio error:', error.code, error.message);
         }
+        if (!currentPlaybackToken) {
+            return;
+        }
         // Notify backend so the state machine can continue
-        sendToBackend('audio_ended', { error: 'load_error' });
+        sendToBackend('audio_ended', {
+            error: 'load_error',
+            playbackToken: currentPlaybackToken,
+        });
+        currentPlaybackToken = null;
     });
 
-    function playLiveAudio(audioBase64, text) {
+    function playLiveAudio(audioBase64, text, playbackToken) {
         hideOverlays();
+        currentPlaybackToken = playbackToken || `local-${Date.now()}-${Math.random()}`;
+        suppressEndedEvent = false;
 
         if (text) {
             showResponseText(text);
@@ -216,7 +233,8 @@
 
         audioPlayer.play().catch(function (err) {
             console.warn('[Presenter] Live audio play failed:', err);
-            sendToBackend('audio_ended', {});
+            sendToBackend('audio_ended', { playbackToken: currentPlaybackToken });
+            currentPlaybackToken = null;
         });
 
         // Clean up object URL after playback
@@ -234,11 +252,13 @@
     var isStreaming = false;
     var streamResponseText = '';
 
-    function startStreamingAudio(text) {
+    function startStreamingAudio(text, playbackToken) {
         console.log('[Presenter] Starting audio stream...');
         streamBuffer = [];
         isStreaming = true;
         streamResponseText = text || '';
+        currentPlaybackToken = playbackToken || `local-${Date.now()}-${Math.random()}`;
+        suppressEndedEvent = false;
 
         hideOverlays();
         if (text) {
@@ -271,7 +291,8 @@
     function assembleAndPlayStream() {
         if (streamBuffer.length === 0) {
             console.warn('[Presenter] Empty stream buffer.');
-            sendToBackend('audio_ended', {});
+            sendToBackend('audio_ended', { playbackToken: currentPlaybackToken });
+            currentPlaybackToken = null;
             return;
         }
 
@@ -298,7 +319,8 @@
         audioPlayer.load();
         audioPlayer.play().catch(function (err) {
             console.warn('[Presenter] Streamed audio play failed:', err);
-            sendToBackend('audio_ended', {});
+            sendToBackend('audio_ended', { playbackToken: currentPlaybackToken });
+            currentPlaybackToken = null;
         });
 
         audioPlayer.onended = function () {
@@ -310,9 +332,16 @@
 
     // Audio ended event — notify backend
     audioPlayer.addEventListener('ended', function () {
+        if (suppressEndedEvent) {
+            suppressEndedEvent = false;
+            return;
+        }
         setAvatarMode('idle');
         hideOverlays();
-        sendToBackend('audio_ended', {});
+        if (currentPlaybackToken) {
+            sendToBackend('audio_ended', { playbackToken: currentPlaybackToken });
+            currentPlaybackToken = null;
+        }
     });
 
     // --- Avatar Control ---
@@ -433,6 +462,8 @@
     }
 
     function stopAudio() {
+        suppressEndedEvent = true;
+        currentPlaybackToken = null;
         audioPlayer.pause();
         audioPlayer.currentTime = 0;
         audioPlayer.src = '';

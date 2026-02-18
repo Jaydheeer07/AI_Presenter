@@ -60,9 +60,10 @@ async def presenter_websocket(websocket: WebSocket):
             if msg_type == "audio_ended":
                 # Presenter reports audio playback finished
                 logger.info("Audio playback ended on presenter screen.")
+                playback_token = data.get("data", {}).get("playbackToken")
                 # Import here to avoid circular imports
                 from backend.main import handle_audio_complete
-                await handle_audio_complete()
+                await handle_audio_complete(playback_token=playback_token)
 
             elif msg_type == "slide_changed":
                 slide_index = data.get("data", {}).get("slideIndex", 0)
