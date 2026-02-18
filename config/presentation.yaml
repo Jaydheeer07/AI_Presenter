@@ -394,3 +394,21 @@ slides:
     audio_file: "audio/slide_14_outro.mp3"
     has_interaction: false
     trigger: "outro"
+
+# ── Media Commentary Commands ─────────────────────────────────────────────────
+# These slash commands can be typed by the puppeteer while on slides 9 or 10
+# to trigger ARIA's pre-recorded commentary overlays.
+#
+# /video  →  plays slide_09_video_commentary.mp3 (Seedance clip commentary)
+# /audio  →  plays slide_10_audio_commentary.mp3 (AI music commentary)
+#
+# Puppeteer workflow:
+#   1) /next to slide 9
+#   2) Click Play on the video tile in the browser
+#   3) Wait a few seconds
+#   4) Type /video
+#   5) /next to slide 10
+#   6) Click Play on the music player
+#   7) Let it play for ~15 seconds
+#   8) Type /audio
+#   9) /next to slide 11

@@ -172,6 +172,18 @@
         currentPlaybackToken = playbackToken || `local-${Date.now()}-${Math.random()}`;
         suppressEndedEvent = false;
 
+        const musicEl = musicAudio || document.getElementById('musicSample');
+        if (musicEl && !musicEl.paused) {
+            const previousVolume = typeof musicEl.volume === 'number' ? musicEl.volume : 1.0;
+            musicEl.volume = Math.min(previousVolume, 0.3);
+
+            const restoreMusicVolume = function () {
+                musicEl.volume = previousVolume;
+            };
+            audioPlayer.addEventListener('ended', restoreMusicVolume, { once: true });
+            audioPlayer.addEventListener('error', restoreMusicVolume, { once: true });
+        }
+
         const separator = audioUrl.indexOf('?') >= 0 ? '&' : '?';
         const cacheBustedUrl = `${audioUrl}${separator}v=${Date.now()}`;
 
@@ -505,8 +517,21 @@
 
     function initCarousel() {
         var items = document.querySelectorAll('.carousel-item');
-        var dots = document.querySelectorAll('.carousel-dot');
+        var dotsContainer = document.getElementById('carouselDots');
         if (!items.length) return;
+
+        if (dotsContainer) {
+            dotsContainer.innerHTML = '';
+            items.forEach(function (_, i) {
+                var dot = document.createElement('button');
+                dot.className = 'carousel-dot';
+                dot.type = 'button';
+                dot.setAttribute('aria-label', 'Show image ' + (i + 1));
+                dotsContainer.appendChild(dot);
+            });
+        }
+
+        var dots = document.querySelectorAll('.carousel-dot');
 
         carouselIndex = 0;
         showCarouselItem(items, dots, carouselIndex);
@@ -570,18 +595,18 @@
     document.addEventListener('DOMContentLoaded', function () {
         var musicBtn = document.querySelector('.music-play-btn');
         var visualiser = document.querySelector('.music-visualiser');
+        musicAudio = document.getElementById('musicSample');
 
-        if (musicBtn) {
+        if (musicAudio) {
+            musicAudio.addEventListener('ended', function () {
+                musicBtn.textContent = '▶ Play';
+                if (visualiser) visualiser.classList.remove('playing');
+                musicAudio.currentTime = 0;
+            });
+        }
+
+        if (musicBtn && musicAudio) {
             musicBtn.addEventListener('click', function () {
-                if (!musicAudio) {
-                    musicAudio = new Audio('/audio/ai_music_sample.mp3');
-                    musicAudio.addEventListener('ended', function () {
-                        musicBtn.textContent = '▶ Play Sample';
-                        if (visualiser) visualiser.classList.remove('playing');
-                        musicAudio = null;
-                    });
-                }
-
                 if (musicAudio.paused) {
                     musicAudio.play().catch(function (e) {
                         console.warn('[Presenter] Music play failed:', e);
@@ -590,7 +615,7 @@
                     if (visualiser) visualiser.classList.add('playing');
                 } else {
                     musicAudio.pause();
-                    musicBtn.textContent = '▶ Play Sample';
+                    musicBtn.textContent = '▶ Play';
                     if (visualiser) visualiser.classList.remove('playing');
                 }
             });
@@ -600,9 +625,10 @@
     function pauseMusicPlayer() {
         if (musicAudio && !musicAudio.paused) {
             musicAudio.pause();
+            musicAudio.currentTime = 0;
             var musicBtn = document.querySelector('.music-play-btn');
             var visualiser = document.querySelector('.music-visualiser');
-            if (musicBtn) musicBtn.textContent = '▶ Play Sample';
+            if (musicBtn) musicBtn.textContent = '▶ Play';
             if (visualiser) visualiser.classList.remove('playing');
         }
     }

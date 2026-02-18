@@ -24,6 +24,7 @@ INTERRUPT_COMMANDS = {"pause", "stop"}
 VALID_COMMANDS = {
     "intro", "start", "next", "prev", "goto", "ask", "example",
     "qa", "pick", "outro", "pause", "resume", "skip", "status",
+    "video", "audio",
 }
 
 
@@ -45,6 +46,8 @@ def parse_command(text: str) -> Command:
         /skip
         /status
         /example
+        /video
+        /audio
         (free text) — treated as an answer summary
     """
     text = text.strip()

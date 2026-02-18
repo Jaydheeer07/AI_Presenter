@@ -264,7 +264,9 @@ html, body {
 /* ═══════════════════════════════════════════
    SLIDE 0 — Title Slide
    ═══════════════════════════════════════════ */
-.title-slide {}
+.title-slide {
+  padding-bottom: 20px;
+}
 
 .title-badge {
   display: inline-block;
@@ -332,7 +334,9 @@ html, body {
 /* ═══════════════════════════════════════════
    SLIDE 1 — Intro
    ═══════════════════════════════════════════ */
-.intro-slide {}
+.intro-slide {
+  padding-bottom: 20px;
+}
 
 .intro-features {
   display: flex;
@@ -755,7 +759,9 @@ html, body {
   flex-shrink: 0;
 }
 
-.rule-content {}
+.rule-content {
+  flex: 1;
+}
 
 .rule-title {
   font-size: 0.92rem;
@@ -1153,12 +1159,17 @@ html, body {
   grid-template-columns: 1fr 1fr;
   gap: 16px;
   margin: 10px 0;
+  align-items: start;
 }
 .carousel-panel,
 .video-panel {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  padding: 6px;
+  background: rgba(0, 180, 216, 0.06);
+  border: 1px solid rgba(0, 180, 216, 0.2);
+  border-radius: 14px;
 }
 .panel-label {
   font-size: 0.72em;
@@ -1172,16 +1183,16 @@ html, body {
 .img-carousel {
   position: relative;
   width: 100%;
-  aspect-ratio: 4/3;
+  height: clamp(250px, 37vh, 330px);
   overflow: hidden;
-  border-radius: 10px;
-  border: 1px solid var(--dex-border);
-  background: var(--dex-navy-light);
+  border-radius: 12px;
+  box-sizing: border-box;
 }
 .carousel-track {
   position: relative;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 .carousel-item {
   position: absolute;
@@ -1196,6 +1207,7 @@ html, body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 .carousel-caption {
   position: absolute;
@@ -1232,18 +1244,18 @@ html, body {
 /* Video tile */
 .video-tile {
   position: relative;
-  border-radius: 10px;
+  border-radius: 12px;
   overflow: hidden;
-  border: 1px solid var(--dex-border);
-  background: #000;
-  aspect-ratio: 16/9;
+  height: clamp(250px, 37vh, 330px);
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
 }
 .ai-video {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 .video-label {
   position: absolute;

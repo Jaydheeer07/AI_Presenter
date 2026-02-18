@@ -10,7 +10,10 @@ class TestParseCommand:
 
     def test_simple_commands(self):
         """Test parsing of simple slash commands without arguments."""
-        for cmd in ["intro", "start", "next", "prev", "qa", "outro", "pause", "resume", "skip", "status", "example"]:
+        for cmd in [
+            "intro", "start", "next", "prev", "qa", "outro", "pause",
+            "resume", "skip", "status", "example", "video", "audio",
+        ]:
             result = parse_command(f"/{cmd}")
             assert result.type == cmd, f"Failed for /{cmd}"
 

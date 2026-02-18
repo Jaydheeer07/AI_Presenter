@@ -295,6 +295,20 @@ async def handle_command(raw_text: str) -> dict:
     if command.type == "pick":
         return await _process_qa_pick(command.payload.get("question_id"))
 
+    # Handle /video — play slide 9 video commentary audio directly
+    if command.type == "video":
+        return await _play_commentary_audio(
+            audio_url="/audio/slide_09_video_commentary.mp3",
+            status_message="ARIA commenting on video...",
+        )
+
+    # Handle /audio — play slide 10 music commentary audio directly
+    if command.type == "audio":
+        return await _play_commentary_audio(
+            audio_url="/audio/slide_10_audio_commentary.mp3",
+            status_message="ARIA commenting on music...",
+        )
+
     # Auto-fill question from slide config when /ask Name is used without a question
     if command.type == "ask" and not command.payload.get("question"):
         slide = presentation_state.get("current_slide", 0)
@@ -369,6 +383,40 @@ async def _run_graph() -> dict:
     except Exception as e:
         logger.error(f"Graph execution error: {e}", exc_info=True)
         return {"status": "error", "message": str(e)}
+
+
+async def _play_commentary_audio(audio_url: str, status_message: str) -> dict:
+    """Play a pre-generated commentary audio file directly, bypassing the graph.
+
+    Used by /video and /audio commands to play commentary overlays without
+    triggering presenting_node (which would play the slide narration instead).
+    """
+    global presentation_state, _active_playback_token
+
+    playback_token = uuid.uuid4().hex
+    _active_playback_token = playback_token
+
+    presentation_state["agent_state"] = AgentState.PRESENTING
+    presentation_state["is_audio_playing"] = True
+
+    await presenter.broadcast_to_presenters({
+        "type": "show_avatar",
+        "data": {"mode": "speaking"},
+    })
+    await presenter.broadcast_to_presenters({
+        "type": "play_audio",
+        "data": {
+            "audioUrl": audio_url,
+            "audioType": "pre_generated",
+            "playbackToken": playback_token,
+        },
+    })
+    await control.send_to_control({
+        "type": "status_update",
+        "data": {"state": "presenting", "message": status_message},
+    })
+
+    return {"status": "ok", "message": status_message}
 
 
 async def _process_audience_response(answer_summary: str) -> dict:
