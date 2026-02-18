@@ -5,33 +5,70 @@ for that state: playing audio, calling LLM, advancing slides, etc.
 """
 
 import logging
+from functools import lru_cache
+from pathlib import Path
 from typing import Any
+
+import yaml
 
 from backend.agent.states import GraphState
 from backend.models.presentation import AgentState, AudioType
 
 logger = logging.getLogger(__name__)
 
-# Audio file mapping for all 13 slides (indices 1-12; slide 0 is the title with no audio)
-SLIDE_AUDIO_MAP = {
-    1: "slide_01_intro.mp3",
-    2: "slide_02_why.mp3",
-    3: "slide_03_what_ai_is.mp3",
-    4: "slide_04_chatgpt.mp3",
-    5: "slide_05_ecosystem.mp3",
-    6: "slide_06_prompt_engineering.mp3",   # NEW — Prompt Engineering 101
-    7: "slide_07_advanced.mp3",             # was slide 6
-    8: "slide_08_entertainment.mp3",        # was slide 7
-    9: "slide_09_safety.mp3",               # was slide 8
-    10: "slide_10_meta_moment.mp3",         # NEW — Meta Moment
-    11: "slide_11_qa.mp3",                  # was slide 9
-    12: "slide_12_outro.mp3",               # was slide 10
-}
-
-
 def _get_audio_file(slide: int) -> str:
     """Get the audio filename for a given slide index."""
-    return SLIDE_AUDIO_MAP.get(slide, f"slide_{slide:02d}.mp3")
+    slide_audio_map = _load_slide_audio_map()
+    return slide_audio_map.get(slide, f"slide_{slide:02d}.mp3")
+
+
+@lru_cache(maxsize=1)
+def _load_slide_audio_map() -> dict[int, str]:
+    """Load per-slide narration audio mapping from config/presentation.yaml."""
+    config_path = Path(__file__).resolve().parent.parent.parent / "config" / "presentation.yaml"
+    try:
+        with open(config_path, "r", encoding="utf-8") as f:
+            data = yaml.safe_load(f) or {}
+    except FileNotFoundError:
+        logger.warning(f"Presentation config not found at {config_path}")
+        return {}
+    except Exception as e:
+        logger.warning(f"Failed to load slide audio map from {config_path}: {e}")
+        return {}
+
+    mapping: dict[int, str] = {}
+    for slide in data.get("slides", []):
+        slide_id = slide.get("id")
+        audio_file = slide.get("audio_file")
+        if isinstance(slide_id, int) and audio_file:
+            mapping[slide_id] = Path(audio_file).name
+
+    return mapping
+
+
+@lru_cache(maxsize=1)
+def _load_question_audio_map() -> dict[int, str]:
+    """Load per-slide question audio mapping from config/presentation.yaml."""
+    config_path = Path(__file__).resolve().parent.parent.parent / "config" / "presentation.yaml"
+    try:
+        with open(config_path, "r", encoding="utf-8") as f:
+            data = yaml.safe_load(f) or {}
+    except FileNotFoundError:
+        logger.warning(f"Presentation config not found at {config_path}")
+        return {}
+    except Exception as e:
+        logger.warning(f"Failed to load question audio map from {config_path}: {e}")
+        return {}
+
+    mapping: dict[int, str] = {}
+    for slide in data.get("slides", []):
+        slide_id = slide.get("id")
+        interaction = slide.get("interaction") or {}
+        question_audio = interaction.get("question_audio")
+        if isinstance(slide_id, int) and question_audio:
+            mapping[slide_id] = Path(question_audio).name
+
+    return mapping
 
 
 def idle_node(state: GraphState) -> dict:
@@ -52,7 +89,7 @@ def introducing_node(state: GraphState) -> dict:
         {"type": "goto_slide", "data": {"slideIndex": slide_index}},
         {"type": "show_avatar", "data": {"mode": "speaking"}},
         {"type": "play_audio", "data": {"audioUrl": f"/audio/{_get_audio_file(slide_index)}", "audioType": "pre_generated"}},
-        {"type": "status", "data": {"state": "introducing", "message": "DexIQ is introducing itself..."}},
+        {"type": "status", "data": {"state": "introducing", "message": "ARIA is introducing itself..."}},
     ]
 
     return {
@@ -93,34 +130,33 @@ def asking_node(state: GraphState) -> dict:
     slide = state.get("current_slide", 0)
     logger.info(f"Asking {target}: {question}")
 
-    # Map slide number to the pre-generated question audio file
-    question_audio_map = {
-        2: "ask_02_repetitive.mp3",
-        3: "ask_03_wrong.mp3",
-        4: "ask_04_chatgpt.mp3",
-        5: "ask_05_ecosystem.mp3",
-        6: "ask_06_prompt.mp3",             # NEW — Prompt Engineering
-        7: "ask_07_automation.mp3",         # was slide 6
-        8: "ask_08_creative.mp3",           # was slide 7
-    }
-
-    audio_file = question_audio_map.get(slide, f"ask_{slide:02d}.mp3")
+    # Use question audio from config to avoid stale hardcoded filenames.
+    question_audio_map = _load_question_audio_map()
+    audio_file = question_audio_map.get(slide)
 
     ws_messages = [
         {"type": "show_question", "data": {"question": question, "targetName": target}},
         {"type": "show_avatar", "data": {"mode": "speaking"}},
-        {"type": "play_audio", "data": {
-            "audioUrl": f"/audio/{audio_file}",
-            "audioType": "pre_generated",
-            "fallback": True,
-        }},
         {"type": "status", "data": {"state": "asking", "target": target, "question": question}},
     ]
 
+    is_audio_playing = False
+    current_audio_type = AudioType.NONE
+    if audio_file:
+        ws_messages.insert(2, {"type": "play_audio", "data": {
+            "audioUrl": f"/audio/{audio_file}",
+            "audioType": "pre_generated",
+            "fallback": True,
+        }})
+        is_audio_playing = True
+        current_audio_type = AudioType.PRE_GENERATED
+    else:
+        logger.warning(f"No configured question audio for slide {slide}; asking without pre-generated audio.")
+
     return {
         "agent_state": AgentState.ASKING,
-        "is_audio_playing": True,
-        "current_audio_type": AudioType.PRE_GENERATED,
+        "is_audio_playing": is_audio_playing,
+        "current_audio_type": current_audio_type,
         "ws_messages": ws_messages,
     }
 
@@ -188,15 +224,15 @@ def qa_mode_node(state: GraphState) -> dict:
     logger.info("Entering Q&A mode.")
 
     ws_messages = [
-        {"type": "goto_slide", "data": {"slideIndex": 11}},
+        {"type": "goto_slide", "data": {"slideIndex": 12}},
         {"type": "show_avatar", "data": {"mode": "speaking"}},
-        {"type": "play_audio", "data": {"audioUrl": "/audio/slide_11_qa.mp3", "audioType": "pre_generated"}},
+        {"type": "play_audio", "data": {"audioUrl": f"/audio/{_get_audio_file(12)}", "audioType": "pre_generated"}},
         {"type": "status", "data": {"state": "qa_mode", "message": "Q&A mode active. Use /pick N to answer questions."}},
     ]
 
     return {
         "agent_state": AgentState.QA_MODE,
-        "current_slide": 11,
+        "current_slide": 12,
         "is_audio_playing": True,
         "current_audio_type": AudioType.PRE_GENERATED,
         "ws_messages": ws_messages,
@@ -208,15 +244,15 @@ def outro_node(state: GraphState) -> dict:
     logger.info("Delivering outro.")
 
     ws_messages = [
-        {"type": "goto_slide", "data": {"slideIndex": 12}},
+        {"type": "goto_slide", "data": {"slideIndex": 14}},
         {"type": "show_avatar", "data": {"mode": "speaking"}},
-        {"type": "play_audio", "data": {"audioUrl": "/audio/slide_12_outro.mp3", "audioType": "pre_generated"}},
-        {"type": "status", "data": {"state": "outro", "message": "DexIQ is delivering closing remarks..."}},
+        {"type": "play_audio", "data": {"audioUrl": f"/audio/{_get_audio_file(14)}", "audioType": "pre_generated"}},
+        {"type": "status", "data": {"state": "outro", "message": "ARIA is delivering closing remarks..."}},
     ]
 
     return {
         "agent_state": AgentState.OUTRO,
-        "current_slide": 12,
+        "current_slide": 14,
         "is_audio_playing": True,
         "current_audio_type": AudioType.PRE_GENERATED,
         "ws_messages": ws_messages,

@@ -35,7 +35,7 @@ def create_initial_state(total_slides: int = 11) -> dict:
 
 # Import actions after defining the test helper to avoid langgraph import at module level
 try:
-    from backend.agent.actions import decide_next_state, route_next_command
+    from backend.agent.actions import asking_node, decide_next_state, route_next_command
 except ImportError:
     # If langgraph is not installed, define minimal stubs for the routing functions
     # that mirror the logic in actions.py without the langgraph type hints
@@ -49,7 +49,7 @@ except ImportError:
     sys.modules["langgraph.graph"] = langgraph_mock
     langgraph_mock.add_messages = lambda x, y: x + y
 
-    from backend.agent.actions import decide_next_state, route_next_command
+    from backend.agent.actions import asking_node, decide_next_state, route_next_command
 
 
 class TestInitialState:
@@ -197,3 +197,34 @@ class TestDecideNextState:
         state = create_initial_state()
         state["agent_state"] = AgentState.IDLE
         assert decide_next_state(state) == "idle"
+
+
+class TestAskingNodeAudio:
+    """Regression tests for ask-audio file selection."""
+
+    def test_uses_configured_question_audio(self):
+        state = create_initial_state(total_slides=15)
+        state["current_slide"] = 2
+        state["current_target"] = "Maria"
+        state["current_question"] = "What's one repetitive task in your week?"
+
+        result = asking_node(state)
+        play_audio_msgs = [m for m in result["ws_messages"] if m.get("type") == "play_audio"]
+
+        assert result["is_audio_playing"] is True
+        assert result["current_audio_type"] == AudioType.PRE_GENERATED
+        assert len(play_audio_msgs) == 1
+        assert play_audio_msgs[0]["data"]["audioUrl"].endswith("/ask_02_repetitive.mp3")
+
+    def test_no_configured_question_audio_does_not_guess_filename(self):
+        state = create_initial_state(total_slides=15)
+        state["current_slide"] = 7
+        state["current_target"] = "Maria"
+        state["current_question"] = "Fallback ask question"
+
+        result = asking_node(state)
+        play_audio_msgs = [m for m in result["ws_messages"] if m.get("type") == "play_audio"]
+
+        assert result["is_audio_playing"] is False
+        assert result["current_audio_type"] == AudioType.NONE
+        assert len(play_audio_msgs) == 0

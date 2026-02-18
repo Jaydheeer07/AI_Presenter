@@ -1,30 +1,36 @@
-# DexIQ AI Presenter - Presentation Configuration
-# STATUS: UPDATED — 13 slides with Dexterous Group branding
+# ARIA AI Presenter - Presentation Configuration
+# STATUS: UPDATED — 15 slides, ARIA branding
 
 presentation:
   title: "Lunch & Learn: Automations & Practical AI Tools for Everyday Work"
-  presenter_name: "DexIQ"
-  presenter_description: "AI Assistant for Dexterous Group"
-  total_slides: 13
+  presenter_name: "ARIA"
+  presenter_description: "Automated Reasoning & Intelligent Assistant — Built by Dexterous Group"
+  total_slides: 15
 
 slides:
   - id: 0
     title: "Title Slide"
-    narration: null  # Human introduces — you speak live
+    narration: null
     audio_file: null
     has_interaction: false
-    notes: "You deliver the human intro yourself, then type /intro in Chainlit"
+    notes: "Human introduces — you speak live, then type /intro in Chainlit"
 
   - id: 1
-    title: "AI Introduction"
+    title: "Meet ARIA"
     narration: >
-      Hello everyone! I'm DexIQ, an AI assistant, and I'll be your presenter today.
-      My goal is simple: I want to show you practical, real-world ways that AI tools
-      can help you work smarter — whether that's drafting emails faster, automating
-      repetitive tasks, or even exploring creative side projects. I'll also be asking
-      some of you questions throughout the session, so stay sharp! And toward the end,
-      you'll have a chance to ask me anything. Just scan the QR code when we get there.
-      Ready? Let's dive in.
+      Hello everyone — I'm ARIA, your AI host for today's session.
+      ARIA stands for Automated Reasoning and Intelligent Assistant, and
+      I was built by the team at Dexterous Group to bring this presentation
+      to life. I want to be upfront with you: I'm not a human, and I'm not
+      a recording. Every single word you're hearing right now is being
+      generated live by an AI, specifically for this audience and this moment.
+      My goal today is simple — I want to show you practical, real-world ways
+      that AI tools can make your working life easier. Whether that's drafting
+      a client email in 30 seconds, summarising a 50-page document in three
+      bullet points, or automating the tasks that eat up your afternoon.
+      I'll also be asking some of you questions throughout — so stay sharp!
+      And toward the end, you'll have the chance to ask me anything directly.
+      Just scan the QR code when we get there. Ready? Let's get into it.
     audio_file: "audio/slide_01_intro.mp3"
     has_interaction: false
     trigger: "intro"
@@ -32,14 +38,21 @@ slides:
   - id: 2
     title: "Why Should You Care About AI?"
     narration: >
-      So why are we here today? Dexterous has always been about working smarter, not
-      just harder. AI isn't just a buzzword anymore — it's a set of practical tools
-      that can genuinely save you hours every week. And I'm not talking about writing
-      poems or generating cat pictures, though AI can do those too. I'm talking about
-      drafting that client email in 30 seconds instead of 10 minutes. Summarizing a
-      50-email thread into three bullet points. Debugging a formula that's been driving
-      you crazy. Today's goal is to show you exactly how to do those things, and to
-      give you the confidence to try them out starting tomorrow.
+      So why are we here today?
+      Here's the honest answer: AI tools are going to change how accounting
+      firms operate — and the people who learn to use them now will have a
+      real advantage over those who wait.
+      But let's get specific. Because I'm not here to talk about AI in the
+      abstract. I'm here to show you things you can do this afternoon.
+      Want to draft a professional client email chasing a late invoice?
+      You can do that with AI in under 30 seconds. Got a 40-page engagement
+      letter you need to understand quickly? AI can summarise it into five
+      key points before you finish your coffee. Have a formula in Excel
+      that you've been staring at for 20 minutes? Paste it into an AI tool
+      and it will explain it in plain English — like a patient tutor
+      available 24 hours a day.
+      Today's session is about giving you the confidence to try these things
+      starting tomorrow. Let's go.
     audio_file: "audio/slide_02_why.mp3"
     has_interaction: true
     interaction:
@@ -51,14 +64,22 @@ slides:
   - id: 3
     title: "What AI Is (and Isn't)"
     narration: >
-      Before we jump into specific tools, let's set expectations. AI is a powerful
-      assistant. Think of it like having a very fast, very knowledgeable intern who
-      never sleeps. It can draft emails, summarize documents, explain complex formulas,
-      and brainstorm ideas. But — and this is crucial — it does not replace your judgment.
-      It doesn't have accountability. It can be confidently wrong. So the golden rule is:
-      you are always the final director. AI gives you the first draft; you give it the
-      final stamp. This is especially important in our line of work at Dexterous where
-      accuracy with financial data is non-negotiable.
+      Before we jump into specific tools, let's set expectations. AI is a
+      powerful assistant — but it has real limits, and understanding both
+      sides makes you a better user.
+      On the good side: AI is a tireless drafter. It can write emails,
+      reports, and summaries faster than any human. It's a 24/7 tutor for
+      formulas, concepts, and procedures. It spots patterns in data and
+      documents. And it's genuinely getting better at a remarkable pace —
+      what it can do today versus 12 months ago is a significant jump.
+      But here's what AI isn't: it's not infallible. It can produce
+      something that looks authoritative, sounds confident, and is
+      completely wrong. This is called hallucination, and it's real.
+      It has no accountability — you own the final output, not the AI.
+      And critically: on free, public tools, it is not safe for sensitive
+      client data.
+      The golden rule is this: AI gives you the first draft. You give it
+      the final stamp. In our industry, that distinction is not optional.
     audio_file: "audio/slide_03_what_ai_is.mp3"
     has_interaction: true
     interaction:
@@ -68,18 +89,26 @@ slides:
       fallback_response: "That's a great example of why human oversight matters."
 
   - id: 4
-    title: "ChatGPT & Large Language Models"
+    title: "ChatGPT Capabilities"
     narration: >
-      Let's start with the tool most of you have probably heard of: ChatGPT. Think of
-      ChatGPT as your all-purpose thinking partner. Its biggest strength is conversational
-      back-and-forth — you can say 'help me draft an email to a client about a late
-      payment' and it'll give you a professional, friendly draft in seconds. You can then
-      say 'make it more formal' or 'add a reminder about their payment terms' and it
-      adjusts. It's also fantastic for summarizing. Got a 30-email thread about a project?
-      Paste it in and ask for three key takeaways. And for those of you who work in Excel
-      — if you've ever stared at a formula trying to figure out what it does, paste it
-      into ChatGPT and ask it to explain it in plain English. It's like having a patient
-      tutor available 24/7.
+      Let's start with the tool most of you have probably heard of: ChatGPT.
+      Think of it as your all-purpose thinking partner — available 24 hours
+      a day, never impatient, with a working knowledge of everything from
+      tax law to email etiquette.
+      Its biggest strength is conversational back-and-forth. You can say
+      "help me draft an email to a client about a late payment" and you
+      get a professional, friendly draft in seconds. If you don't love it,
+      say "make it more formal" or "add a reference to their payment terms"
+      and it adjusts. No starting over. Just iterate.
+      It's also brilliant for summarising. Got a 30-email thread you need
+      to catch up on? Paste it in, ask for the three key decisions and the
+      next action. Done in 10 seconds.
+      And for those of you who work in Excel — paste in a formula you don't
+      understand and ask ChatGPT to explain it in plain English. It's like
+      having a patient tutor available whenever you need one.
+      The key insight: ChatGPT doesn't make you redundant. It makes you
+      faster at the repetitive parts of your job, so you have more energy
+      for the parts that genuinely need your brain.
     audio_file: "audio/slide_04_chatgpt.mp3"
     has_interaction: true
     interaction:
@@ -91,16 +120,30 @@ slides:
   - id: 5
     title: "The AI Ecosystem"
     narration: >
-      Now, ChatGPT is great, but it's not the only player. Let's compare the big four.
-      ChatGPT is the most flexible for general conversation and thinking tasks. Microsoft
-      Copilot is your best bet if you live in the Microsoft ecosystem — it's literally
-      built into Outlook, Word, Excel, and Teams. If you're writing an email in Outlook,
-      Copilot can draft it without you leaving the app. Google Gemini does the same thing
-      for Google Workspace users — it's integrated into Docs, Gmail, and Drive. And then
-      there's Claude, which is actually the AI powering me right now. Claude excels at
-      longer documents, detailed analysis, and coding tasks. It's particularly good at
-      understanding nuance and providing thoughtful, careful responses. The takeaway?
-      Don't marry one tool. Use the right tool for the right job.
+      Now, ChatGPT is great — but it's not the only player. Let me give you
+      a quick tour of the AI landscape so you know what's out there.
+      Starting with the big four. First, ChatGPT — the most widely known,
+      and the best all-rounder for writing, brainstorming, and analysis.
+      Second: Microsoft Copilot. If your team lives in Microsoft 365 —
+      Outlook, Word, Excel, and Teams — Copilot is your best friend.
+      It's built directly into those apps. Draft an email in Outlook
+      without opening a new tab. That's a genuine time-saver.
+      Third: Google Gemini. Same concept, for the Google Workspace
+      ecosystem. If you're in Gmail, Docs, or Drive, Gemini works
+      right there inside those tools.
+      And fourth: Claude — which is, full disclosure, the AI actually
+      powering me right now. Claude is particularly strong with long
+      documents and nuanced reasoning.
+      Beyond the big four, there are specialists worth knowing. Perplexity AI
+      is my recommendation for research — it searches the web and gives
+      answers with actual citations, which matters when you're looking up
+      ATO guidance or tax legislation. Otter dot AI can join your client
+      meetings and give you a full transcript and summary automatically.
+      DeepSeek is a free, highly capable model that's been making waves
+      as a cost-free alternative to ChatGPT Plus. And Grok from X gives
+      you real-time web access in your AI responses.
+      The big takeaway? Don't marry one tool. Different tools have
+      different strengths. The best AI users know which one to reach for.
     audio_file: "audio/slide_05_ecosystem.mp3"
     has_interaction: true
     interaction:
@@ -110,19 +153,23 @@ slides:
       fallback_response: "That's common — most teams end up using a mix these days."
 
   - id: 6
-    title: "How to Talk to AI — Prompt Engineering 101"
+    title: "Prompt Engineering 101"
     narration: >
-      Now here's something that can instantly make you better at using any AI tool:
-      prompt engineering. The difference between a mediocre AI response and a brilliant
-      one is all in how you ask. Let me show you what I mean. A vague prompt like 'write
-      me an email about the invoice' will get you something generic that needs heavy
-      editing. But an engineered prompt — where you give the AI a role, context, and
-      specific constraints — gets you something you can almost send as-is. For example:
-      'You are a professional accountant at an Australian firm. Write a polite follow-up
-      email to a client whose invoice 4521 is 14 days overdue. Keep it firm but friendly.
-      Use Australian English.' See the difference? Four quick tips: give it a role, be
-      specific about what you need, show it examples of what good looks like, and iterate
-      — refine through follow-up prompts until you get exactly what you want.
+      Now here's something that will instantly make you better at using
+      any AI tool: prompt engineering. The difference between a mediocre
+      AI response and a brilliant one is all in how you ask.
+      Let me show you what I mean. A vague prompt like "write me an email
+      about the invoice" will get you something generic that needs heavy
+      editing. But an engineered prompt — where you give the AI a role,
+      context, and specific constraints — gets you something you can
+      almost send straight away. For example: "You are a professional
+      accountant at an Australian firm. Write a polite follow-up email
+      to a client whose invoice 4521 is 14 days overdue. Keep it firm
+      but friendly. Use Australian English." See the difference?
+      Four quick tips to get you started: give it a role, be specific
+      about what you need, show it examples of what good looks like,
+      and iterate — refine through follow-up prompts until you get
+      exactly what you want.
     audio_file: "audio/slide_06_prompt_engineering.mp3"
     has_interaction: true
     interaction:
@@ -132,99 +179,218 @@ slides:
       fallback_response: "That's a perfect example of where better prompting can help."
 
   - id: 7
-    title: "Advanced Use Cases"
+    title: "Prompting Like a Pro"
     narration: >
-      This slide is for those of you who are a bit more technically inclined, or who work
-      with our development team. AI isn't just about writing emails — it's transforming
-      how we handle infrastructure and automation. For example, at Dexterous we use n8n
-      to build automated workflows that process tasks step by step. We use AI to help
-      troubleshoot database errors, manage migration scripts, and even configure cloud
-      servers. And version control with GitHub becomes much more manageable when you have
-      an AI that can help you understand code changes, write commit messages, and resolve
-      merge conflicts. Even if you're not a developer, understanding that these
-      capabilities exist helps you have better conversations with the people who build
-      and maintain our systems.
-    audio_file: "audio/slide_07_advanced.mp3"
+      If Slide 6 was the basics, this is where we level up.
+      The six techniques you're looking at are what separate someone who
+      gets decent AI output from someone who gets brilliant output
+      every single time.
+      Format instructions: tell the AI exactly how you want the answer
+      structured — a numbered list, a table, a summary under 200 words —
+      and you spend zero time reformatting.
+      Constraints are your guardrails. "Australian English, no legal
+      jargon, under two paragraphs." The AI works within those limits
+      rather than producing something generic.
+      The step-by-step trigger is one of the most powerful techniques
+      on this list. Adding "think through this before answering"
+      dramatically improves accuracy — especially for anything involving
+      logic or numbers.
+      Context first is simple but often forgotten. Don't ask the question
+      cold. Paste in the background, the email thread, the document —
+      then ask.
+      Ask for alternatives. Say "give me three versions — formal, casual,
+      brief." You'll almost always prefer the second or third.
+      And finally, stack role and audience. "You are a senior tax advisor
+      explaining this to a small business owner with no finance background."
+      Now the AI has everything it needs to nail the tone.
+      The real pro move? Chain them all. One well-crafted prompt with
+      role, context, constraints, format, and audience — and you get
+      output you can use immediately.
+    audio_file: "audio/slide_07_prompting_pro.mp3"
+    has_interaction: false
+
+  - id: 8
+    title: "Advanced AI Tools"
+    narration: >
+      Let's talk about the tools that go beyond chatbots — the ones
+      transforming how developers, operations teams, and content creators
+      work day to day.
+      Starting with automation. If you've ever wanted two systems that
+      don't talk to each other to actually communicate automatically —
+      say, a new email creates a task in your project management tool,
+      or a client form response goes straight into your spreadsheet —
+      that's what these platforms do.
+      n8n is the most powerful option if your team has technical
+      resources. It's open-source, self-hosted, and integrates deeply
+      with AI models for genuinely intelligent automated pipelines.
+      Make is a strong visual builder most teams can pick up without
+      a developer. Zapier is the simplest starting point — connect
+      two apps in about five minutes, no code required.
+      For content pipeline tools: ElevenLabs does AI voice cloning and
+      text-to-speech at a professional level. HeyGen creates AI avatar
+      videos where a digital presenter reads your script — not entirely
+      unlike what I'm doing right now. And CapCut AI builds the kind of
+      polished short-form video you see all over TikTok and YouTube.
+      For developers and technical teams, the AI coding tools have had
+      a massive year. Cursor is the most talked-about AI code editor —
+      it understands your entire project and can write, modify, and debug
+      code across multiple files simultaneously. Windsurf, now backed
+      by OpenAI, has a cleaner interface and is a great entry point
+      even if you're not an experienced developer. GitHub Copilot is
+      the mature, enterprise-ready option that slots into your existing
+      workflow. And Claude Code, Anthropic's terminal-first agent, is
+      particularly strong for large codebase work.
+      These tools are genuinely changing what a small, motivated team
+      can build and produce.
+    audio_file: "audio/slide_08_advanced_tools.mp3"
     has_interaction: true
     interaction:
       target: "TBD"
       question: "Have you automated any part of your workflow, even something simple?"
-      question_audio: "audio/ask_07_automation.mp3"
+      question_audio: "audio/ask_08_automation.mp3"
       fallback_response: "Even small automations can save hours over time."
 
-  - id: 8
-    title: "AI for Entertainment & Creativity"
+  - id: 9
+    title: "AI Images & Video"
     narration: >
-      Now for the fun part. AI isn't just a work tool — it's also an incredible creative
-      playground. You can use AI to generate cinematic visuals for personal video projects.
-      Imagine describing a scene and having AI create a hyper-realistic image of it in
-      seconds. You can explore home design ideas by describing your dream living room and
-      getting visual concepts back. There are AI-powered games where the characters
-      actually have unscripted conversations with you — every playthrough is different.
-      And there are tools that let you describe a song and have AI compose it. These
-      aren't just toys — they're windows into where this technology is heading. And
-      honestly, playing with AI creatively is one of the best ways to build intuition
-      for using it professionally.
-    audio_file: "audio/slide_08_entertainment.mp3"
+      Let's take a brief detour into the creative side of AI — because
+      this is where things get genuinely jaw-dropping.
+      Take a look at these images. Every single one was generated from
+      a text description. Not a photographer, not a designer, not a
+      retouching team. Just words, and an AI that's learned to understand
+      the visual world at an extraordinary level.
+      The image model making the biggest waves right now is Nano Banana Pro.
+      Yes, that's its actual name — it's Google's latest model built on
+      Gemini 3 Pro. It's currently leading the benchmarks for photorealism,
+      text rendering inside images, and complex scene composition. You can
+      generate a 4K image with accurate legible text in under 10 seconds.
+      For video — which is where things are moving incredibly fast —
+      you're looking at Seedance 2.0 from ByteDance, the people behind
+      TikTok. It just caused what people are calling Hollywood's
+      "DeepSeek moment." It can replicate camera moves, character styles,
+      and action sequences with remarkable accuracy. Disney and Paramount
+      have already sent cease-and-desist letters. That tells you
+      everything about how seriously the industry is taking it.
+      Whether you use these tools professionally or just for fun — the era
+      of "I don't have the budget for good visuals" is genuinely over.
+    audio_file: "audio/slide_09_ai_images_video.mp3"
+    has_interaction: false
+
+  - id: 10
+    title: "AI Music & Creative Writing"
+    narration: >
+      And it doesn't stop at visuals. What you're about to hear was not
+      composed by a human musician, not recorded in a studio, and not
+      edited by a sound engineer.
+      That was generated by an AI, from a simple text description, in
+      under a minute. Tools like Suno, Udio, and Stability Audio can
+      do similar things — from ambient soundscapes to full tracks with
+      vocals, drums, and instrumentation.
+      And then there's creative writing. This is probably the AI
+      application most of you have already played with — but look at
+      the example on screen. That limerick about tax season was generated
+      from that exact prompt in about 20 seconds. Zero drafts. Not bad
+      for a machine that doesn't actually pay taxes.
+      The creative applications extend far beyond fun: social media
+      posts, client newsletters, proposal introductions, internal memos.
+      Combine a good prompt — remember Slide 6 — with a strong AI model,
+      and the first draft of almost any written content can be ready
+      before you've finished your coffee.
+    audio_file: "audio/slide_10_music_creative.mp3"
     has_interaction: true
     interaction:
       target: "TBD"
       question: "Has anyone here tried using AI for a personal creative project?"
-      question_audio: "audio/ask_08_creative.mp3"
-      fallback_response: "I'd encourage everyone to try it — it's a great way to learn."
-
-  - id: 9
-    title: "AI Safety & Best Practices"
-    narration: >
-      Before we wrap up, let's talk about safety — because this is critical, especially
-      in our industry. Rule number one: never paste sensitive client data into public AI
-      models. Free ChatGPT, free Gemini — these are not vetted for handling confidential
-      financial information. When you need AI for client work, use enterprise-approved
-      tools like Microsoft Copilot, which is designed for business data security. Rule
-      two: always fact-check AI output, especially numbers. AI can be confidently wrong
-      about financial calculations, and in accounting, a wrong number isn't just
-      embarrassing — it's a liability. Rule three: know your firm's AI policy and check
-      which tools are approved. Rule four: disclose AI use when required — transparency
-      builds trust with clients and stakeholders.
-    audio_file: "audio/slide_09_safety.mp3"
-    has_interaction: false
-
-  - id: 10
-    title: "The Meta Moment"
-    narration: >
-      Now here's something fun — let me pull back the curtain and show you how this
-      presentation actually works. Right now, there's a human operator — we call them the
-      puppeteer — controlling the flow of this presentation using typed commands. Each
-      time a slide advances, my AI brain — that's Claude, by Anthropic — generates the
-      narration text you're hearing. That text is then sent to Kokoro, a text-to-speech
-      system running locally in a Docker container, which converts it into the voice
-      you're listening to right now. And finally, that audio plays through your speakers.
-      The whole pipeline — from command to voice — happens in seconds. And when you asked
-      me questions earlier? Those answers were generated live too. I'm not a recording.
-      Every word I've spoken today was generated just for this session.
-    audio_file: "audio/slide_10_meta_moment.mp3"
-    has_interaction: false
+      question_audio: "audio/ask_10_creative.mp3"
+      fallback_response: "I'd encourage everyone to try it — it's a great way to build intuition."
 
   - id: 11
+    title: "AI Safety & Best Practices"
+    narration: >
+      Before we get to questions, let's pause for the safety briefing.
+      This is critical for anyone in professional services.
+      Rule one: never paste sensitive client data into a free, public
+      AI model. Free ChatGPT, free Gemini — these tools are not designed
+      for confidential financial information. For client work, use
+      enterprise-approved tools like Microsoft Copilot, which is
+      specifically built for business data security.
+      Rule two: always verify the numbers. AI can produce a result that
+      looks authoritative, is formatted perfectly, and is completely wrong.
+      Especially with financial calculations, tax figures, or legal
+      references — check everything yourself. In our industry, a wrong
+      number is not just embarrassing, it's a liability.
+      Rule three: know your firm's AI policy. Which tools are approved,
+      what data classification rules apply, whether there are restrictions
+      on specific use cases. This landscape is changing fast — make sure
+      you're working within current policy.
+      Rule four: use enterprise tools for client work. Copilot and Google
+      Workspace AI exist specifically for this — built-in security
+      controls, business data protections, and compliance frameworks.
+      And rule five: be transparent when it matters. If AI materially
+      contributed to a deliverable, be ready to say so if asked.
+      Transparency builds trust — and trust is the foundation of every
+      client relationship in this industry.
+    audio_file: "audio/slide_11_safety.mp3"
+    has_interaction: false
+
+  - id: 12
     title: "Q&A"
     narration: >
-      Now it's your turn! If you have any questions about AI tools, how to use them,
-      or anything we covered today, just raise your hand or type your question. I'll
-      answer it live right here. And yes — I'm actually generating these answers in
-      real time. Let's see what you've got.
-    audio_file: "audio/slide_11_qa.mp3"
+      Now it's your turn.
+      Scan the QR code on screen, or type the URL directly into your
+      phone browser. You'll get a simple form — type your question
+      and hit submit.
+      I'll receive your questions in real time and answer them live,
+      right here. No pre-written answers. No safety net.
+      Just ARIA, generating responses on the spot.
+      So — what do you want to know?
+    audio_file: "audio/slide_12_qa.mp3"
     has_interaction: false
     trigger: "qa"
 
-  - id: 12
+  - id: 13
+    title: "The Meta Moment"
+    narration: >
+      Before I hand you back, let me pull back the curtain for a moment —
+      because showing you how this works is the most fitting way to close
+      a session about AI.
+      Right now, there's a human operator — we call them the puppeteer —
+      who has been running the flow of today's session using a simple
+      command interface. Each time a slide advanced, each time I answered
+      one of your questions: the operator typed a command, and a chain
+      of AI systems did the rest.
+      My voice? That's a text-to-speech model called Kokoro, running
+      locally in a Docker container on that laptop over there. My
+      responses to your questions? Generated live by Claude — the AI
+      model built by Anthropic — with no pre-written scripts.
+      The whole pipeline — from a typed command to a spoken sentence —
+      runs in a matter of seconds.
+      I'm not a recording. Every word I've spoken today was generated
+      specifically for this room, this audience, and this moment.
+      And if that doesn't make you want to explore what AI can do
+      for your work — I genuinely don't know what will.
+    audio_file: "audio/slide_13_meta_moment.mp3"
+    has_interaction: false
+
+  - id: 14
     title: "Closing"
     narration: >
-      Thank you all for your time and attention today. I hope I've given you a few ideas
-      to try out this week — whether that's drafting an email with ChatGPT, asking Copilot
-      to summarize a document, or just playing around with an AI tool for fun. Remember:
-      AI is a tool, and you are the craftsperson. The best results come when humans and AI
-      work together, each doing what they do best. I've been DexIQ, your AI presenter,
-      and it's been a pleasure. Now back to your regularly scheduled human. Thank you!
-    audio_file: "audio/slide_12_outro.mp3"
+      And with that — we're done.
+      Thank you all for being such an engaged audience today. I hope
+      this session has given you a few things to actually try this
+      week — whether that's crafting a better prompt, using Copilot
+      to draft your next email, or just spending 20 minutes exploring
+      what one of these tools can do.
+      I want to leave you with one thought. AI does not make you
+      irrelevant. It makes the parts of your job that are routine
+      faster and easier — so you have more time for the parts that
+      genuinely require your expertise, your relationships, and your
+      judgment. That's not a threat. That's a gift, if you choose
+      to use it.
+      I've been ARIA — the AI assistant built by the team at
+      Dexterous Group. It's been a genuine pleasure, even if I'll
+      never know what you had for lunch.
+      Back to your human now.
+    audio_file: "audio/slide_14_outro.mp3"
     has_interaction: false
     trigger: "outro"

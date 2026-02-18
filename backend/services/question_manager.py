@@ -123,6 +123,13 @@ class QuestionManager:
             self._answered_questions.append(q)
             logger.info(f"Question #{question_id} answered.")
 
+            # Persist status update to Supabase (best-effort)
+            try:
+                from backend.services import supabase_service
+                supabase_service.update_question_status(question_id, "answered", answer)
+            except Exception as e:
+                logger.warning(f"Supabase status update failed for question #{question_id}: {e}")
+
     def get_all_questions(self) -> list[dict]:
         """Get all questions as a list of dicts (for status display)."""
         return [

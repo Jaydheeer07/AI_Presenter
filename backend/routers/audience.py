@@ -36,8 +36,18 @@ async def submit_question(submission: QuestionSubmission):
         name=submission.name.strip() if submission.name else None,
     )
 
-    # Trigger async filtering
+    # Persist to Supabase (non-blocking, best-effort)
+    from backend.services import supabase_service
     import asyncio
+    asyncio.get_event_loop().run_in_executor(
+        None,
+        supabase_service.persist_question,
+        question.id,
+        question.name,
+        question.question,
+    )
+
+    # Trigger async filtering
     asyncio.create_task(filter_and_queue_question(question.id))
 
     return JSONResponse(

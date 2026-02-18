@@ -1102,3 +1102,314 @@ html, body {
   background: linear-gradient(90deg, transparent 0%, rgba(0, 180, 216, 0.15) 50%, transparent 100%);
   z-index: 2;
 }
+
+/* ═══════════════════════════════════════════════
+   NEW — Slide 5: Specialist tools bar
+   ═══════════════════════════════════════════════ */
+.specialist-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--dex-border);
+  border-radius: 8px;
+  font-size: 0.72em;
+}
+.specialist-label {
+  color: var(--dex-gray);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.specialist-chip {
+  background: rgba(0, 180, 216, 0.12);
+  border: 1px solid rgba(0, 180, 216, 0.25);
+  border-radius: 20px;
+  padding: 3px 10px;
+  color: var(--dex-teal);
+  font-size: 0.95em;
+  white-space: nowrap;
+}
+
+/* ═══════════════════════════════════════════════
+   NEW — Slide 8: Section labels between tool-card groups
+   ═══════════════════════════════════════════════ */
+.tools-section-label {
+  font-size: 0.75em;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--dex-gray);
+  text-transform: uppercase;
+  margin: 12px 0 6px 0;
+}
+
+/* ═══════════════════════════════════════════════
+   NEW — Slide 9: Creative layout (carousel + video)
+   ═══════════════════════════════════════════════ */
+.creative-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 10px 0;
+}
+.carousel-panel,
+.video-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.panel-label {
+  font-size: 0.72em;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--dex-gray);
+  text-transform: uppercase;
+}
+
+/* Image carousel */
+.img-carousel {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  border-radius: 10px;
+  border: 1px solid var(--dex-border);
+  background: var(--dex-navy-light);
+}
+.carousel-track {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.carousel-item {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.carousel-item.active {
+  opacity: 1;
+}
+.carousel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.carousel-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 4px 8px;
+  background: rgba(10,22,40,0.75);
+  font-size: 0.65em;
+  color: var(--dex-gray);
+  text-align: center;
+}
+.carousel-dots {
+  position: absolute;
+  bottom: 26px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 5px;
+  z-index: 2;
+}
+.carousel-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.carousel-dot.active {
+  background: var(--dex-teal);
+}
+
+/* Video tile */
+.video-tile {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--dex-border);
+  background: #000;
+  aspect-ratio: 16/9;
+  display: flex;
+  flex-direction: column;
+}
+.ai-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.video-label {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.video-tool-badge {
+  background: var(--dex-teal);
+  color: #000;
+  font-size: 0.6em;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 2px 7px;
+  width: fit-content;
+}
+.video-desc {
+  font-size: 0.58em;
+  color: rgba(255,255,255,0.7);
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+}
+.video-play-btn {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(10,22,40,0.85);
+  border: 1px solid var(--dex-teal);
+  color: var(--dex-teal);
+  font-size: 0.65em;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  font-family: var(--font-display);
+}
+.video-play-btn:hover {
+  background: var(--dex-teal);
+  color: #000;
+}
+
+/* ═══════════════════════════════════════════════
+   NEW — Slide 10: Music player card
+   ═══════════════════════════════════════════════ */
+.music-player-card {
+  background: var(--dex-navy-card);
+  border: 1px solid var(--dex-border);
+  border-radius: 12px;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.music-player-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.music-icon {
+  font-size: 1.8em;
+  flex-shrink: 0;
+}
+.music-info {
+  flex: 1;
+}
+.music-title {
+  font-size: 0.9em;
+  font-weight: 700;
+  color: var(--dex-white);
+}
+.music-sub {
+  font-size: 0.68em;
+  color: var(--dex-gray);
+  margin-top: 2px;
+}
+.music-play-btn {
+  background: var(--dex-teal);
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-size: 0.75em;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--font-display);
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.music-play-btn:hover {
+  background: var(--dex-teal-dark);
+  color: #fff;
+}
+.music-visualiser {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 24px;
+}
+.vis-bar {
+  flex: 1;
+  background: var(--dex-border);
+  border-radius: 2px;
+  height: 4px;
+  transition: height 0.15s ease;
+}
+.music-visualiser.playing .vis-bar:nth-child(1) { animation: visbar 0.6s ease-in-out infinite alternate; animation-delay: 0.0s; }
+.music-visualiser.playing .vis-bar:nth-child(2) { animation: visbar 0.6s ease-in-out infinite alternate; animation-delay: 0.1s; }
+.music-visualiser.playing .vis-bar:nth-child(3) { animation: visbar 0.6s ease-in-out infinite alternate; animation-delay: 0.25s; }
+.music-visualiser.playing .vis-bar:nth-child(4) { animation: visbar 0.6s ease-in-out infinite alternate; animation-delay: 0.05s; }
+.music-visualiser.playing .vis-bar:nth-child(5) { animation: visbar 0.6s ease-in-out infinite alternate; animation-delay: 0.3s; }
+.music-visualiser.playing .vis-bar:nth-child(6) { animation: visbar 0.6s ease-in-out infinite alternate; animation-delay: 0.15s; }
+.music-visualiser.playing .vis-bar:nth-child(7) { animation: visbar 0.6s ease-in-out infinite alternate; animation-delay: 0.2s; }
+.music-visualiser.playing .vis-bar:nth-child(8) { animation: visbar 0.6s ease-in-out infinite alternate; animation-delay: 0.35s; }
+@keyframes visbar {
+  from { height: 4px; background: rgba(0,180,216,0.3); }
+  to   { height: 22px; background: var(--dex-teal); }
+}
+.music-tools {
+  font-size: 0.65em;
+  color: var(--dex-gray-dim);
+  text-align: right;
+}
+
+/* ═══════════════════════════════════════════════
+   NEW — Slide 12: Q&A layout with QR code
+   ═══════════════════════════════════════════════ */
+.qa-main {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 30px;
+  align-items: center;
+  margin: 20px 0;
+}
+.qr-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.qr-image {
+  width: 160px;
+  height: 160px;
+  border-radius: 10px;
+  border: 3px solid var(--dex-teal);
+  background: #fff;
+  padding: 4px;
+}
+.qr-label {
+  font-size: 0.65em;
+  color: var(--dex-gray);
+  text-align: center;
+}
+.qa-disclaimer {
+  font-size: 0.7em;
+  color: var(--dex-gray-dim);
+  text-align: center;
+  margin-top: 8px;
+}
+
+/* ═══════════════════════════════════════════════
+   NEW — Slide 7: Pro tips grid (2-column override for prompt-tips)
+   ═══════════════════════════════════════════════ */
+.pro-tips-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 20px;
+}

@@ -1,5 +1,5 @@
 /**
- * DexIQ AI Presenter — WebSocket client, slide control, and audio playback.
+ * ARIA AI Presenter — WebSocket client, slide control, and audio playback.
  *
  * Connects to the FastAPI backend via WebSocket and receives commands to
  * control Reveal.js slides, play audio, and manage the avatar.
@@ -168,7 +168,10 @@
     function playPreGenAudio(audioUrl, fallback) {
         hideOverlays();
 
-        audioPlayer.src = audioUrl;
+        const separator = audioUrl.indexOf('?') >= 0 ? '&' : '?';
+        const cacheBustedUrl = `${audioUrl}${separator}v=${Date.now()}`;
+
+        audioPlayer.src = cacheBustedUrl;
         audioPlayer.load();
 
         const playPromise = audioPlayer.play();
@@ -451,7 +454,127 @@
     // --- Slide change tracking ---
     Reveal.on('slidechanged', function (event) {
         sendToBackend('slide_changed', { slideIndex: event.indexh });
+
+        // Slide 9: start carousel auto-advance
+        if (event.indexh === 9) {
+            initCarousel();
+        } else {
+            stopCarousel();
+        }
+
+        // Slide 10: pause any playing music when leaving
+        if (event.indexh !== 10) {
+            pauseMusicPlayer();
+        }
     });
+
+    // --- Image Carousel (Slide 9) ---
+    var carouselTimer = null;
+    var carouselIndex = 0;
+
+    function initCarousel() {
+        var items = document.querySelectorAll('.carousel-item');
+        var dots = document.querySelectorAll('.carousel-dot');
+        if (!items.length) return;
+
+        carouselIndex = 0;
+        showCarouselItem(items, dots, carouselIndex);
+
+        stopCarousel();
+        carouselTimer = setInterval(function () {
+            carouselIndex = (carouselIndex + 1) % items.length;
+            showCarouselItem(items, dots, carouselIndex);
+        }, 3500);
+
+        // Dot click navigation
+        dots.forEach(function (dot, i) {
+            dot.onclick = function () {
+                carouselIndex = i;
+                showCarouselItem(items, dots, carouselIndex);
+            };
+        });
+    }
+
+    function showCarouselItem(items, dots, index) {
+        items.forEach(function (item, i) {
+            item.classList.toggle('active', i === index);
+        });
+        dots.forEach(function (dot, i) {
+            dot.classList.toggle('active', i === index);
+        });
+    }
+
+    function stopCarousel() {
+        if (carouselTimer) {
+            clearInterval(carouselTimer);
+            carouselTimer = null;
+        }
+    }
+
+    // --- Video Toggle (Slide 9) ---
+    document.addEventListener('DOMContentLoaded', function () {
+        var playBtn = document.querySelector('.video-play-btn');
+        var aiVideo = document.querySelector('.ai-video');
+
+        if (playBtn && aiVideo) {
+            playBtn.addEventListener('click', function () {
+                if (aiVideo.paused) {
+                    aiVideo.play();
+                    playBtn.textContent = '⏸ Pause';
+                } else {
+                    aiVideo.pause();
+                    playBtn.textContent = '▶ Play';
+                }
+            });
+
+            aiVideo.addEventListener('ended', function () {
+                playBtn.textContent = '▶ Play';
+            });
+        }
+    });
+
+    // --- Music Player Toggle (Slide 10) ---
+    var musicAudio = null;
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var musicBtn = document.querySelector('.music-play-btn');
+        var visualiser = document.querySelector('.music-visualiser');
+
+        if (musicBtn) {
+            musicBtn.addEventListener('click', function () {
+                if (!musicAudio) {
+                    musicAudio = new Audio('/audio/ai_music_sample.mp3');
+                    musicAudio.addEventListener('ended', function () {
+                        musicBtn.textContent = '▶ Play Sample';
+                        if (visualiser) visualiser.classList.remove('playing');
+                        musicAudio = null;
+                    });
+                }
+
+                if (musicAudio.paused) {
+                    musicAudio.play().catch(function (e) {
+                        console.warn('[Presenter] Music play failed:', e);
+                    });
+                    musicBtn.textContent = '⏸ Pause';
+                    if (visualiser) visualiser.classList.add('playing');
+                } else {
+                    musicAudio.pause();
+                    musicBtn.textContent = '▶ Play Sample';
+                    if (visualiser) visualiser.classList.remove('playing');
+                }
+            });
+        }
+    });
+
+    function pauseMusicPlayer() {
+        if (musicAudio && !musicAudio.paused) {
+            musicAudio.pause();
+            var musicBtn = document.querySelector('.music-play-btn');
+            var visualiser = document.querySelector('.music-visualiser');
+            if (musicBtn) musicBtn.textContent = '▶ Play Sample';
+            if (visualiser) visualiser.classList.remove('playing');
+        }
+    }
 
     // --- Initialize ---
     connect();

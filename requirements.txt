@@ -1,4 +1,4 @@
-# DexIQ AI Presenter - Python Dependencies
+# ARIA AI Presenter - Python Dependencies
 
 # Backend framework
 fastapi>=0.104.0
@@ -26,6 +26,9 @@ python-dotenv>=1.0
 
 # QR code generation
 qrcode[pil]>=7.4
+
+# Supabase (audience Q&A persistence)
+supabase>=2.0.0
 
 # Audio utilities
 pydub>=0.25.1

@@ -1,5 +1,5 @@
 /**
- * DexIQ Audience Q&A — Question submission form logic.
+ * ARIA Audience Q&A — Question submission form logic.
  *
  * Handles the audience-facing Q&A page where people submit questions
  * via their phones after scanning the QR code.
