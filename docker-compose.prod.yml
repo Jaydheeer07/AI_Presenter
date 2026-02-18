@@ -1,0 +1,45 @@
+services:
+  backend:
+    build: .
+    container_name: dexiq-backend
+    expose:
+      - "8000"
+    env_file:
+      - .env
+    volumes:
+      - ./frontend:/app/frontend
+      - ./config:/app/config
+    restart: unless-stopped
+    command: uvicorn backend.main:app --host 0.0.0.0 --port 8000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  chainlit:
+    build: .
+    container_name: dexiq-chainlit
+    expose:
+      - "8001"
+    env_file:
+      - .env
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      - BACKEND_WS_URL=ws://backend:8000/ws/control
+    restart: unless-stopped
+    command: chainlit run chainlit_app.py --host 0.0.0.0 --port 8001 --root-path /control
+
+  nginx:
+    image: nginx:alpine
+    container_name: dexiq-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - backend
+      - chainlit
+    restart: unless-stopped
