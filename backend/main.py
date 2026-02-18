@@ -133,6 +133,42 @@ def _validate_audio_files():
         )
 
 
+def _hydrate_questions_from_supabase():
+    """Load existing questions for this session from Supabase into question_manager."""
+    from backend.services import supabase_service
+    from backend.models.questions import QuestionStatus
+
+    rows = supabase_service.get_session_questions()
+    if not rows:
+        logger.info("No existing Supabase questions to hydrate.")
+        return
+
+    status_map = {
+        "pending": QuestionStatus.PENDING,
+        "approved": QuestionStatus.APPROVED,
+        "answered": QuestionStatus.ANSWERED,
+        "flagged": QuestionStatus.FLAGGED,
+        "rejected": QuestionStatus.REJECTED,
+    }
+
+    max_local_id = 0
+    for row in rows:
+        local_id = row.get("local_id", 0)
+        q = question_manager.submit_question(
+            question=row["question"],
+            name=row.get("name") if row.get("name") != "Anonymous" else None,
+        )
+        # Overwrite the auto-assigned id with the stored local_id so /pick N matches
+        question_manager._questions[-1].id = local_id
+        question_manager._questions[-1].status = status_map.get(row.get("status", "pending"), QuestionStatus.PENDING)
+        if local_id > max_local_id:
+            max_local_id = local_id
+
+    # Advance the ID counter past the highest loaded ID to avoid collisions
+    question_manager._next_id = max_local_id + 1
+    logger.info(f"Hydrated {len(rows)} question(s) from Supabase (next id: {question_manager._next_id}).")
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan: startup and shutdown."""
@@ -140,6 +176,7 @@ async def lifespan(app: FastAPI):
     _load_audience_config()
     logger.info(f"Loaded {len(_audience_config)} audience members.")
     _validate_audio_files()
+    _hydrate_questions_from_supabase()
     if tts_is_configured():
         logger.info("ElevenLabs TTS configured and ready for live responses.")
     else:
@@ -290,6 +327,21 @@ async def handle_command(raw_text: str) -> dict:
 
         # Process the answer through the live response pipeline
         return await _process_audience_response(command.payload.get("summary", ""))
+
+    # Handle /questions — list all submitted questions in the current session
+    if command.type == "questions":
+        all_qs = question_manager.get_all_questions()
+        if not all_qs:
+            return {"status": "ok", "message": "No questions submitted yet."}
+        lines = [f"**Q&A Queue — {len(all_qs)} question(s):**"]
+        for q in all_qs:
+            status_icon = {"pending": "🕐", "approved": "✅", "flagged": "⚠️", "answered": "✔️"}.get(q["status"], "❓")
+            score_text = f" (score: {q['score']})" if q["score"] is not None else ""
+            lines.append(
+                f"{status_icon} **#{q['id']}** [{q['status']}{score_text}] "
+                f"**{q['name']}:** {q['question']}"
+            )
+        return {"status": "ok", "message": "\n".join(lines)}
 
     # Handle /pick N — answer a Q&A question live
     if command.type == "pick":

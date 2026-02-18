@@ -78,6 +78,11 @@ async def _listen_for_updates():
                         content=f"❌ **Error:** {result.get('message', 'Unknown error')}",
                         author="System",
                     ).send()
+                elif result.get("message"):
+                    await cl.Message(
+                        content=result["message"],
+                        author="System",
+                    ).send()
 
             elif msg_type == "status_update":
                 update = data.get("data", {})
@@ -142,7 +147,8 @@ async def on_chat_start():
                 "- `/ask Name: Question` — AI asks someone a question\n"
                 "- *(type answer summary)* — AI responds to their answer\n"
                 "- `/qa` — Enter Q&A mode\n"
-                "- `/pick N` — Answer question #N\n"
+                "- `/questions` — List all submitted questions with IDs\n"
+                "- `/pick N` — Answer question #N from the list\n"
                 "- `/outro` — Closing remarks\n"
                 "- `/pause` / `/resume` — Emergency controls\n"
                 "- `/status` — Check current state\n"

@@ -23,7 +23,7 @@ INTERRUPT_COMMANDS = {"pause", "stop"}
 # All recognized slash commands
 VALID_COMMANDS = {
     "intro", "start", "next", "prev", "goto", "ask", "example",
-    "qa", "pick", "outro", "pause", "resume", "skip", "status",
+    "qa", "pick", "questions", "outro", "pause", "resume", "skip", "status",
     "video", "audio",
 }
 
@@ -39,6 +39,7 @@ def parse_command(text: str) -> Command:
         /goto 5
         /ask Maria: What AI tools do you use?
         /pick 3
+        /questions
         /qa
         /outro
         /pause
